@@ -6,6 +6,8 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import type { StageAction } from "@/data/content";
 
+export type PersonAction = StageAction | "idle" | "walk";
+
 type PersonProps = {
   photo: string;
   outfit: string;
@@ -15,9 +17,11 @@ type PersonProps = {
   x: number;
   z: number;
   side: "left" | "right";
-  action: StageAction | "idle";
-  grabbed: boolean;
-  onPointerDown: (event: { nativeEvent: PointerEvent }) => void;
+  action: PersonAction;
+  grabbed?: boolean;
+  scripted?: boolean;
+  facingY?: number;
+  onPointerDown?: (event: { nativeEvent: PointerEvent }) => void;
 };
 
 type Pose = {
@@ -51,7 +55,7 @@ const REST: Pose = {
 };
 
 function poseFor(
-  action: StageAction | "idle",
+  action: PersonAction,
   elapsed: number,
   t: number,
   side: "left" | "right",
@@ -84,7 +88,18 @@ function poseFor(
     return pose;
   }
 
-  if (action === "wave") {
+  if (action === "walk") {
+    const step = t * 7.2 + phase;
+    const left = Math.sin(step);
+    const right = Math.sin(step + Math.PI);
+    pose.hop = Math.abs(Math.sin(step * 2)) * 0.025;
+    pose.hipsTilt = left * 0.07;
+    pose.chestTwist = left * 0.08;
+    pose.armL = { out: 0.14, raise: 0.12 + right * 0.32, elbow: 0.35 };
+    pose.armR = { out: -0.14, raise: 0.12 + left * 0.32, elbow: 0.35 };
+    pose.legL = { lift: 0.18 + Math.max(0, left) * 0.42, knee: 0.2 + Math.max(0, left) * 0.45 };
+    pose.legR = { lift: 0.18 + Math.max(0, right) * 0.42, knee: 0.2 + Math.max(0, right) * 0.45 };
+  } else if (action === "wave") {
     const flap = Math.sin(elapsed * 12) * 0.55;
     pose.armR = { out: -1.15, raise: -0.15 + flap, elbow: 0.9 };
     pose.armL = { out: 0.28, raise: 0.35, elbow: 0.4 };
@@ -170,7 +185,9 @@ export function Person({
   z,
   side,
   action,
-  grabbed,
+  grabbed = false,
+  scripted = false,
+  facingY,
   onPointerDown,
 }: PersonProps) {
   const root = useRef<THREE.Group>(null);
@@ -208,7 +225,7 @@ export function Person({
 
     let targetX = x;
     let targetZ = z;
-    if (!grabbed && (action === "hug" || action === "kiss")) {
+    if (!scripted && !grabbed && (action === "hug" || action === "kiss")) {
       targetX = hugX;
       targetZ = 0.1;
     }
@@ -217,7 +234,8 @@ export function Person({
     rootNode.position.x = spring(rootNode.position.x, targetX, dt, grabbed ? 22 : 9);
     rootNode.position.z = spring(rootNode.position.z, targetZ, dt, grabbed ? 22 : 9);
     rootNode.position.y = spring(rootNode.position.y, pose.hop, dt, 14);
-    rootNode.rotation.y = spring(rootNode.rotation.y, pose.faceY, dt, 8);
+    const yaw = facingY ?? pose.faceY;
+    rootNode.rotation.y = spring(rootNode.rotation.y, yaw, dt, 8);
 
     hips.current!.position.y = spring(hips.current!.position.y, pose.hipsY, dt, 12);
     hips.current!.rotation.z = spring(hips.current!.rotation.z, pose.hipsTilt, dt, 10);
@@ -242,10 +260,17 @@ export function Person({
   const shirtMat = useMemo(() => ({ color: outfit, roughness: 0.42, metalness: 0.02 }), [outfit]);
 
   return (
-    <group ref={root} position={[home[0], 0, home[1]]} onPointerDown={onPointerDown}>
-      <mesh visible={false} position={[0, 0.72, 0]}>
-        <capsuleGeometry args={[0.28, 0.95, 4, 8]} />
-      </mesh>
+    <group
+      ref={root}
+      position={[home[0], 0, home[1]]
+      onPointerDown={onPointerDown}
+      raycast={onPointerDown ? undefined : () => null}
+    >
+      {onPointerDown ? (
+        <mesh visible={false} position={[0, 0.72, 0]}>
+          <capsuleGeometry args={[0.28, 0.95, 4, 8]} />
+        </mesh>
+      ) : null}
 
       <group ref={hips} position={[0, 0.52, 0]}>
         <mesh position={[0, -0.02, 0]}>

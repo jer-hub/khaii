@@ -3,7 +3,7 @@
  * PERSONALIZE THIS FILE
  *
  * Everything the gift site displays lives here — name, password, dates,
- * memories, coupons, reasons, game pairs, quiz cards, story scenes,
+ * memories, coupons, reasons, game pairs, quiz cards, season story captions,
  * and the 3D couple (names + placeholder photos).
  * Edit these values; you shouldn't need to touch the rest of the app.
  * ──────────────────────────────────────────────────────────────────────────
@@ -343,37 +343,49 @@ export const QUIZ_CARDS: QuizCard[] = [
   },
 ];
 
-export type StoryScene = {
-  id: string;
-  title: string;
-  date?: string;
-  body: string;
-  motif: ArtMotif;
-};
+export const STORY_LOOP_SECONDS = 30;
+export const SEASON_SECONDS = 7.5;
 
-export const STORY_SCENES: StoryScene[] = [
+export const SEASON_STORY = [
   {
-    id: "intro",
-    title: "Once upon a us",
-    date: "The beginning",
-    body: "Not a fairytale — just the days we actually lived, lined up so you can watch them again.",
-    motif: "heart",
+    id: "spring",
+    title: "Spring, we set out",
+    line: "Petals on the path, a picnic packed, the year just opening.",
+    sky: "#f3dce6",
+    ground: "#8fbe8a",
+    fog: "#f7e9ee",
+    light: "#ffe6f0",
   },
-  ...MEMORIES.map((memory) => ({
-    id: memory.id,
-    title: memory.title,
-    date: memory.date,
-    body: memory.story,
-    motif: memory.motif,
-  })),
   {
-    id: "always",
-    title: "And still",
-    date: "Today",
-    body: "The best part is that the story is not finished. It just keeps choosing you.",
-    motif: "ring",
+    id: "summer",
+    title: "Summer, we linger",
+    line: "Gold light, a shared umbrella, the afternoon that refused to end.",
+    sky: "#f6e2b8",
+    ground: "#c9b15a",
+    fog: "#f8ecc8",
+    light: "#ffe7a8",
   },
-];
+  {
+    id: "autumn",
+    title: "Autumn, we wander",
+    line: "Leaves underfoot, a lantern for later, every wrong turn still ours.",
+    sky: "#e8c09a",
+    ground: "#b56a3a",
+    fog: "#f0d3b0",
+    light: "#ffc089",
+  },
+  {
+    id: "winter",
+    title: "Winter, we stay",
+    line: "Snow hush, two coats, the year folding us closer.",
+    sky: "#d5e3ee",
+    ground: "#e8eef4",
+    fog: "#e7eef5",
+    light: "#dfefff",
+  },
+] as const;
+
+export type SeasonId = (typeof SEASON_STORY)[number]["id"];
 
 export const TABS = [
   { id: "home", label: "Home" },

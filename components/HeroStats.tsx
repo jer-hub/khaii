@@ -79,7 +79,7 @@ const playCards: {
   {
     id: "story",
     title: "Our story",
-    detail: "Sit back and watch it unfold.",
+    detail: "A year with you, in thirty seconds.",
     icon: Clapperboard,
     tint: "bg-rose/30",
   },
