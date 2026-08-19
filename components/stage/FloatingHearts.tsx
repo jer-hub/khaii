@@ -10,17 +10,17 @@ function seed(index: number, salt: number) {
 }
 
 export function FloatingHearts({ active }: { active: boolean }) {
-  const count = 18;
+  const count = 28;
   const mesh = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const seeds = useMemo(
     () =>
       Array.from({ length: count }, (_, index) => ({
-        x: (seed(index, 1) - 0.5) * 0.7,
-        z: (seed(index, 2) - 0.5) * 0.4,
+        x: (seed(index, 1) - 0.5) * 0.85,
+        z: (seed(index, 2) - 0.5) * 0.45,
         delay: seed(index, 3) * 1.4,
-        speed: 0.35 + seed(index, 4) * 0.35,
-        scale: 0.04 + seed(index, 5) * 0.03,
+        speed: 0.4 + seed(index, 4) * 0.4,
+        scale: 0.055 + seed(index, 5) * 0.04,
       })),
     [count],
   );
@@ -31,7 +31,7 @@ export function FloatingHearts({ active }: { active: boolean }) {
     seeds.forEach((item, index) => {
       const local = (t * item.speed + item.delay) % 1.8;
       const visible = active ? 1 : 0;
-      dummy.position.set(item.x, 0.9 + local * 1.1, item.z);
+      dummy.position.set(item.x, 0.55 + local * 1.15, item.z);
       dummy.scale.setScalar(item.scale * visible * (1 - local / 1.8));
       dummy.rotation.z = Math.sin(t + index) * 0.4;
       dummy.updateMatrix();
@@ -43,7 +43,7 @@ export function FloatingHearts({ active }: { active: boolean }) {
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshStandardMaterial color="#e39a9a" emissive="#f4c2c2" emissiveIntensity={0.35} />
+      <meshStandardMaterial color="#e39a9a" emissive="#f4c2c2" emissiveIntensity={0.55} />
     </instancedMesh>
   );
 }

@@ -28,18 +28,18 @@ export function actionForTime(t: number): "walk" | "wave" | "dance" | "hug" | "i
   if (t < 7.5) return "walk";
   if (t < 15) return "dance";
   if (t < 22.5) return "walk";
-  if (t < 28.2) return "hug";
+  if (t < 29.4) return "hug";
   return "idle";
 }
 
 export function coupleOffset(t: number, side: "left" | "right") {
-  const hugging = t >= 22.5 && t < 28.2;
+  const hugging = t >= 22.5 && t < 29.4;
   const baseX = side === "left" ? -0.28 : 0.28;
-  const hugX = side === "left" ? -0.2 : 0.2;
-  const sway = Math.sin(t * 0.42) * (hugging ? 0.02 : 0.14);
+  const hugX = side === "left" ? -0.11 : 0.11;
+  const sway = Math.sin(t * 0.42) * (hugging ? 0.01 : 0.14);
   const stagger = side === "left" ? 0 : 0.4;
   return {
     x: (hugging ? hugX : baseX) + sway,
-    z: 0.1 + Math.sin(t * 0.31 + stagger) * (hugging ? 0.02 : 0.1),
+    z: hugging ? 0.12 : 0.1 + Math.sin(t * 0.31 + stagger) * 0.1,
   };
 }

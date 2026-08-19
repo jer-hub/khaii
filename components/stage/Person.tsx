@@ -175,16 +175,26 @@ function poseFor(
     pose.headTurn = -0.28 * inward;
     pose.chestTwist = 0.22 * inward;
   } else if (action === "hug") {
-    pose.faceY = 0.55 * inward;
-    pose.spineBend = 0.18;
-    pose.headTilt = 0.18;
-    pose.headTurn = 0.35 * inward;
-    pose.armL = { out: 0.15, raise: 0.35, elbow: 0.2 };
-    pose.armR = { out: -0.15, raise: 0.35, elbow: 0.2 };
-    pose.wristL = { flick: 0.45, twist: 0.7 * inward };
-    pose.wristR = { flick: 0.45, twist: 0.7 * inward };
-    pose.hipsY = -0.02;
-    pose.legL.lift = 0.18;
+    const squeeze = Math.min(1, elapsed / 0.16);
+    const rock = Math.sin(elapsed * 2.6);
+    pose.faceY = 0.9 * inward;
+    pose.spineBend = 0.24;
+    pose.headTilt = 0.34;
+    pose.headTurn = 0.92 * inward;
+    pose.chestTwist = 0.34 * inward + rock * 0.04;
+    pose.hipsY = -0.05;
+    pose.hipsTilt = rock * 0.09;
+    pose.hop = 0.05 + rock * 0.022;
+    if (side === "left") {
+      pose.armL = { out: -0.7 + 1.12 * squeeze, raise: 0.9 * squeeze, elbow: 0.55 * squeeze };
+      pose.armR = { out: 0.7 - 1.28 * squeeze, raise: 1.25 * squeeze, elbow: 0.8 * squeeze };
+    } else {
+      pose.armL = { out: -0.7 + 1.28 * squeeze, raise: 1.25 * squeeze, elbow: 0.8 * squeeze };
+      pose.armR = { out: 0.7 - 1.12 * squeeze, raise: 0.9 * squeeze, elbow: 0.55 * squeeze };
+    }
+    pose.wristL = { flick: 0.2, twist: 0.7 * inward };
+    pose.wristR = { flick: 0.2, twist: 0.7 * inward };
+    pose.legL.lift = 0.14;
     pose.legR.lift = 0.05;
   } else if (action === "dance") {
     const beat = Math.sin(elapsed * 10.4);
@@ -322,7 +332,7 @@ export function Person({
   const texture = useTexture(photo);
   const skin = "#f0c7b1";
 
-  const hugX = side === "left" ? -0.22 : 0.22;
+  const hugX = side === "left" ? -0.12 : 0.12;
 
   useFrame(({ clock }, delta) => {
     const nodes = [root, hips, spine, chest, head, armL, armR, elbowL, elbowR, wristL, wristR, legL, legR, kneeL, kneeR];
@@ -346,23 +356,26 @@ export function Person({
     }
 
     const rootNode = root.current!;
-    rootNode.position.x = spring(rootNode.position.x, targetX, dt, 18 * snap);
-    rootNode.position.z = spring(rootNode.position.z, targetZ, dt, 18 * snap);
+    const closing = action === "hug" || action === "kiss";
+    const hug = action === "hug";
+    rootNode.position.x = spring(rootNode.position.x, targetX, dt, (closing ? 36 : 18) * snap);
+    rootNode.position.z = spring(rootNode.position.z, targetZ, dt, (closing ? 36 : 18) * snap);
     rootNode.position.y = spring(rootNode.position.y, pose.hop, dt, 26 * snap);
     const yaw = facingY ?? pose.faceY;
-    rootNode.rotation.y = spring(rootNode.rotation.y, yaw, dt, 16 * snap);
+    rootNode.rotation.y = spring(rootNode.rotation.y, yaw, dt, (hug ? 22 : 16) * snap);
 
     hips.current!.position.y = spring(hips.current!.position.y, HIP_Y + pose.hipsY, dt, 20 * snap);
     hips.current!.rotation.z = spring(hips.current!.rotation.z, pose.hipsTilt, dt, 18 * snap);
     spine.current!.rotation.x = spring(spine.current!.rotation.x, pose.spineBend, dt, 18 * snap);
     chest.current!.rotation.y = spring(chest.current!.rotation.y, pose.chestTwist, dt, 18 * snap);
-    head.current!.rotation.z = spring(head.current!.rotation.z, pose.headTilt, dt, 16 * snap);
-    head.current!.rotation.y = spring(head.current!.rotation.y, pose.headTurn, dt, 16 * snap);
+    head.current!.rotation.z = spring(head.current!.rotation.z, pose.headTilt, dt, (hug ? 20 : 16) * snap);
+    head.current!.rotation.y = spring(head.current!.rotation.y, pose.headTurn, dt, (hug ? 22 : 16) * snap);
 
-    armL.current!.rotation.z = spring(armL.current!.rotation.z, pose.armL.out, dt, 26 * snap);
-    armL.current!.rotation.x = spring(armL.current!.rotation.x, pose.armL.raise, dt, 26 * snap);
-    armR.current!.rotation.z = spring(armR.current!.rotation.z, pose.armR.out, dt, 26 * snap);
-    armR.current!.rotation.x = spring(armR.current!.rotation.x, pose.armR.raise, dt, 26 * snap);
+    const limbSnap = hug ? 32 : 26;
+    armL.current!.rotation.z = spring(armL.current!.rotation.z, pose.armL.out, dt, limbSnap * snap);
+    armL.current!.rotation.x = spring(armL.current!.rotation.x, pose.armL.raise, dt, limbSnap * snap);
+    armR.current!.rotation.z = spring(armR.current!.rotation.z, pose.armR.out, dt, limbSnap * snap);
+    armR.current!.rotation.x = spring(armR.current!.rotation.x, pose.armR.raise, dt, limbSnap * snap);
     elbowL.current!.rotation.x = spring(elbowL.current!.rotation.x, pose.armL.elbow, dt, 28 * snap);
     elbowR.current!.rotation.x = spring(elbowR.current!.rotation.x, pose.armR.elbow, dt, 28 * snap);
     wristL.current!.rotation.x = spring(wristL.current!.rotation.x, pose.wristL.flick, dt, 32 * snap);

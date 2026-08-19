@@ -6,6 +6,7 @@ import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { CHARACTERS, STORY_LOOP_SECONDS } from "@/data/content";
 import { useAvatars } from "@/hooks/useAvatars";
+import { FloatingHearts } from "@/components/stage/FloatingHearts";
 import { Person, type PersonAction } from "@/components/stage/Person";
 import {
   AutumnSet,
@@ -64,15 +65,15 @@ function Scene() {
 
     const pulse = mix.blend * 0.5;
     const aspect = state.camera instanceof THREE.PerspectiveCamera ? state.camera.aspect : 0.5;
+    const nextAction = actionForTime(t);
+    const hugging = nextAction === "hug";
     const dist = aspect < 0.75 ? 4.55 : 4.15;
     state.camera.position.set(
-      Math.sin(t * 0.22) * 0.32,
-      0.82 + Math.sin(t * 0.18) * 0.04 + pulse * 0.06,
-      dist - pulse * 0.28 - mix.loopFade * 0.35,
+      Math.sin(t * 0.22) * (hugging ? 0.06 : 0.32),
+      0.82 + Math.sin(t * 0.18) * 0.04 + pulse * 0.06 - (hugging ? 0.1 : 0),
+      dist - pulse * 0.28 - mix.loopFade * 0.35 - (hugging ? 0.7 : 0),
     );
-    state.camera.lookAt(0, 0.4, 0);
-
-    const nextAction = actionForTime(t);
+    state.camera.lookAt(0, hugging ? 0.34 : 0.4, 0);
     if (nextAction !== actionRef.current) {
       actionRef.current = nextAction;
       setAction(nextAction);
@@ -144,6 +145,7 @@ function Scene() {
       <SeasonParticles kind="spark" amount={14} materialRef={spark} />
       <SeasonParticles kind="leaves" amount={24} materialRef={leaf} />
       <SeasonParticles kind="snow" amount={40} materialRef={snow} />
+      <FloatingHearts active={action === "hug"} />
       <ContactShadows position={[0, 0, 0]} opacity={0.28} scale={10} blur={2.4} far={3} />
     </>
   );

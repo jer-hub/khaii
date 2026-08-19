@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import { ArrowUp, Hand, Heart, HeartHandshake, Music } from "lucide-react";
 import { Suspense, useCallback, useMemo, useRef, useState } from "react";
@@ -20,7 +20,7 @@ const ACTION_ICONS = {
 
 const DURATIONS: Record<StageAction, number> = {
   wave: 2400,
-  hug: 3400,
+  hug: 5200,
   dance: 4000,
   kiss: 3000,
   jump: 900,
@@ -30,6 +30,19 @@ const HOMES: Record<CharacterId, [number, number]> = {
   you: [-0.52, 0.14],
   partner: [0.52, 0.14],
 };
+
+function HomeCamera({ hugging }: { hugging: boolean }) {
+  useFrame(({ camera }, delta) => {
+    const dt = Math.min(delta, 0.033);
+    const ease = 1 - Math.exp(-dt * 4.2);
+    const targetZ = hugging ? 2.72 : 3.35;
+    const targetY = hugging ? 0.68 : 0.78;
+    camera.position.z += (targetZ - camera.position.z) * ease;
+    camera.position.y += (targetY - camera.position.y) * ease;
+    camera.lookAt(0, hugging ? 0.32 : 0.38, 0);
+  });
+  return null;
+}
 
 export function HomeStage() {
   const { photos, setPhoto } = useAvatars();
@@ -97,6 +110,7 @@ export function HomeStage() {
         >
           <color attach="background" args={["#f3ebe2"]} />
           <Suspense fallback={null}>
+            <HomeCamera hugging={action === "hug"} />
             <DragLayer
               grab={grab}
               originRef={originRef}
@@ -211,7 +225,9 @@ export function HomeStage() {
               className={`rounded-2xl px-1 py-2 text-center shadow-sm ring-1 transition-colors ${
                 action === item.id
                   ? "bg-charcoal text-cream ring-charcoal"
-                  : "bg-white/75 text-charcoal ring-white hover:bg-rose/40"
+                  : item.id === "hug"
+                    ? "bg-rose/55 text-charcoal ring-rose hover:bg-rose/80"
+                    : "bg-white/75 text-charcoal ring-white hover:bg-rose/40"
               }`}
             >
               <Icon className="mx-auto mb-1 h-4 w-4" />

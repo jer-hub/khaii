@@ -42,7 +42,7 @@ export const CHARACTERS = {
 
 export const STAGE_ACTIONS = [
   { id: "wave", label: "Wave", hint: "A little hello" },
-  { id: "hug", label: "Hug", hint: "Come closer" },
+  { id: "hug", label: "Hug", hint: "Squeeze in close" },
   { id: "dance", label: "Dance", hint: "Sway with me" },
   { id: "kiss", label: "Kiss", hint: "Lean in" },
   { id: "jump", label: "Jump", hint: "Up we go" },
@@ -376,8 +376,8 @@ export const SEASON_STORY = [
   },
   {
     id: "winter",
-    title: "Winter, we stay",
-    line: "Snow hush, two coats, the year folding us closer.",
+    title: "Winter, we hold",
+    line: "Snow hush, two coats, a long hug that does not let go.",
     sky: "#d5e3ee",
     ground: "#e8eef4",
     fog: "#e7eef5",
