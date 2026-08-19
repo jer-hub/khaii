@@ -66,11 +66,11 @@ function Scene() {
     const aspect = state.camera instanceof THREE.PerspectiveCamera ? state.camera.aspect : 0.5;
     const dist = aspect < 0.75 ? 4.55 : 4.15;
     state.camera.position.set(
-      Math.sin(t * 0.22) * 0.38,
-      1.05 + Math.sin(t * 0.18) * 0.04 + pulse * 0.08,
+      Math.sin(t * 0.22) * 0.32,
+      0.82 + Math.sin(t * 0.18) * 0.04 + pulse * 0.06,
       dist - pulse * 0.28 - mix.loopFade * 0.35,
     );
-    state.camera.lookAt(0, 0.52, 0);
+    state.camera.lookAt(0, 0.4, 0);
 
     const nextAction = actionForTime(t);
     if (nextAction !== actionRef.current) {
@@ -80,8 +80,8 @@ function Scene() {
 
     const left = coupleOffset(t, "left");
     const right = coupleOffset(t, "right");
-    if (youGroup.current) youGroup.current.position.set(left.x + 0.34, 0, left.z - 0.12);
-    if (partnerGroup.current) partnerGroup.current.position.set(right.x - 0.34, 0, right.z - 0.12);
+    if (youGroup.current) youGroup.current.position.set(left.x + 0.28, 0, left.z - 0.12);
+    if (partnerGroup.current) partnerGroup.current.position.set(right.x - 0.28, 0, right.z - 0.12);
 
     if (petal.current) petal.current.opacity = seasonOpacity(mix.index, mix.next, mix.blend, 0, 0.9, 0.04);
     if (spark.current) spark.current.opacity = seasonOpacity(mix.index, mix.next, mix.blend, 1, 0.75, 0.04);
@@ -117,8 +117,8 @@ function Scene() {
           outfit={CHARACTERS.you.outfit}
           accent={CHARACTERS.you.accent}
           hair={CHARACTERS.you.hair}
-          home={[-0.34, 0.12]}
-          x={-0.34}
+          home={[-0.28, 0.12]}
+          x={-0.28}
           z={0.12}
           side="left"
           action={action}
@@ -131,8 +131,8 @@ function Scene() {
           outfit={CHARACTERS.partner.outfit}
           accent={CHARACTERS.partner.accent}
           hair={CHARACTERS.partner.hair}
-          home={[0.34, 0.12]}
-          x={0.34}
+          home={[0.28, 0.12]}
+          x={0.28}
           z={0.12}
           side="right"
           action={action}
@@ -154,7 +154,7 @@ export function SeasonWorld() {
     <div className="h-full w-full">
       <Canvas
         dpr={[1, 1.5]}
-        camera={{ position: [0, 1.05, 4.55], fov: 40, near: 0.1, far: 24 }}
+        camera={{ position: [0, 0.82, 4.35], fov: 40, near: 0.1, far: 24 }}
         gl={{ antialias: true }}
         className="h-full w-full"
         style={{ display: "block", width: "100%", height: "100%" }}

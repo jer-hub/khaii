@@ -45,6 +45,8 @@ type Pose = {
   legR: Leg;
 };
 
+const HIP_Y = 0.24;
+
 const REST: Pose = {
   hop: 0,
   hipsY: 0,
@@ -54,12 +56,12 @@ const REST: Pose = {
   headTilt: 0,
   headTurn: 0,
   faceY: 0,
-  armL: { out: 0.16, raise: 0.12, elbow: 0.28 },
-  armR: { out: -0.16, raise: 0.12, elbow: 0.28 },
-  wristL: { flick: 0.08, twist: 0.12 },
-  wristR: { flick: 0.08, twist: -0.12 },
-  legL: { lift: 0.04, knee: 0.08 },
-  legR: { lift: 0.04, knee: 0.08 },
+  armL: { out: 0.28, raise: 0.08, elbow: 0.35 },
+  armR: { out: -0.28, raise: 0.08, elbow: 0.35 },
+  wristL: { flick: 0.1, twist: 0.16 },
+  wristR: { flick: 0.1, twist: -0.16 },
+  legL: { lift: 0.06, knee: 0.12 },
+  legR: { lift: 0.06, knee: 0.12 },
 };
 
 function poseFor(
@@ -71,8 +73,8 @@ function poseFor(
   phase: number,
 ): Pose {
   const inward = side === "left" ? 1 : -1;
-  const breathe = Math.sin(t * 2.2 + phase) * 0.012;
-  const sway = Math.sin(t * 1.15 + phase) * 0.04;
+  const breathe = 0.018 + Math.sin(t * 2.6 + phase) * 0.02;
+  const sway = Math.sin(t * 1.35 + phase) * 0.05;
   const pose: Pose = {
     ...REST,
     hop: breathe,
@@ -108,8 +110,8 @@ function poseFor(
     const down = Math.abs(Math.sin(cadence * 2));
     const elbowLag = 0.42;
     const wristLag = 0.85;
-    pose.hop = down * 0.045;
-    pose.hipsY = -down * 0.028;
+    pose.hop = down * 0.07;
+    pose.hipsY = -down * 0.02;
     pose.hipsTilt = left * 0.11;
     pose.chestTwist = -left * 0.16;
     pose.spineBend = down * 0.05;
@@ -168,7 +170,7 @@ function poseFor(
     const beat = Math.sin(elapsed * 10.4);
     const bounce = Math.abs(Math.sin(elapsed * 10.4));
     const snap = Math.sign(beat) * Math.pow(Math.abs(beat), 0.55);
-    pose.hop = bounce * 0.09;
+    pose.hop = bounce * 0.12;
     pose.hipsTilt = snap * 0.32;
     pose.chestTwist = Math.sin(elapsed * 5.2) * 0.42;
     pose.headTurn = -snap * 0.24;
@@ -266,7 +268,7 @@ export function Person({
   const texture = useTexture(photo);
   const skin = "#f0c7b1";
 
-  const hugX = side === "left" ? -0.32 : 0.32;
+  const hugX = side === "left" ? -0.22 : 0.22;
 
   useFrame(({ clock }, delta) => {
     const nodes = [root, hips, spine, chest, head, armL, armR, elbowL, elbowR, wristL, wristR, legL, legR, kneeL, kneeR];
@@ -296,7 +298,7 @@ export function Person({
     const yaw = facingY ?? pose.faceY;
     rootNode.rotation.y = spring(rootNode.rotation.y, yaw, dt, 16 * snap);
 
-    hips.current!.position.y = spring(hips.current!.position.y, 0.62 + pose.hipsY, dt, 20 * snap);
+    hips.current!.position.y = spring(hips.current!.position.y, HIP_Y + pose.hipsY, dt, 20 * snap);
     hips.current!.rotation.z = spring(hips.current!.rotation.z, pose.hipsTilt, dt, 18 * snap);
     spine.current!.rotation.x = spring(spine.current!.rotation.x, pose.spineBend, dt, 18 * snap);
     chest.current!.rotation.y = spring(chest.current!.rotation.y, pose.chestTwist, dt, 18 * snap);
@@ -325,131 +327,134 @@ export function Person({
   return (
     <group ref={root} position={[home[0], 0, home[1]]} onPointerDown={onPointerDown}>
       {onPointerDown ? (
-        <mesh visible={false} position={[0, 0.72, 0]}>
-          <capsuleGeometry args={[0.28, 0.95, 4, 8]} />
+        <mesh visible={false} position={[0, 0.42, 0]}>
+          <capsuleGeometry args={[0.26, 0.55, 4, 8]} />
         </mesh>
       ) : null}
 
-      <group ref={hips} position={[0, 0.62, 0]}>
-        <mesh position={[0, -0.02, 0]}>
-          <sphereGeometry args={[0.13, 16, 16]} />
+      <group ref={hips} position={[0, HIP_Y, 0]}>
+        <mesh position={[0, 0.02, 0]} scale={[1.15, 0.9, 1.05]}>
+          <sphereGeometry args={[0.155, 18, 18]} />
           <meshStandardMaterial color={outfit} roughness={0.45} />
         </mesh>
 
-        <group ref={legL} position={[-0.075, -0.04, 0]}>
-          <mesh position={[0, -0.18, 0]}>
-            <capsuleGeometry args={[0.055, 0.24, 5, 10]} />
+        <group ref={legL} position={[-0.07, -0.02, 0]}>
+          <mesh position={[0, -0.07, 0]}>
+            <capsuleGeometry args={[0.062, 0.07, 5, 10]} />
             <meshStandardMaterial color="#5c5550" />
           </mesh>
-          <group ref={kneeL} position={[0, -0.32, 0]}>
-            <mesh position={[0, -0.15, 0]}>
-              <capsuleGeometry args={[0.048, 0.2, 5, 10]} />
+          <group ref={kneeL} position={[0, -0.12, 0]}>
+            <mesh position={[0, -0.05, 0]}>
+              <capsuleGeometry args={[0.055, 0.05, 5, 10]} />
               <meshStandardMaterial color="#5c5550" />
             </mesh>
-            <mesh position={[0, -0.27, 0.04]} rotation={[0.18, 0, 0]}>
-              <boxGeometry args={[0.09, 0.045, 0.16]} />
-              <meshStandardMaterial color="#3f3a37" roughness={0.6} />
+            <mesh position={[0, -0.09, 0.03]}>
+              <sphereGeometry args={[0.058, 12, 12]} />
+              <meshStandardMaterial color="#3f3a37" roughness={0.55} />
             </mesh>
           </group>
         </group>
 
-        <group ref={legR} position={[0.075, -0.04, 0]}>
-          <mesh position={[0, -0.18, 0]}>
-            <capsuleGeometry args={[0.055, 0.24, 5, 10]} />
+        <group ref={legR} position={[0.07, -0.02, 0]}>
+          <mesh position={[0, -0.07, 0]}>
+            <capsuleGeometry args={[0.062, 0.07, 5, 10]} />
             <meshStandardMaterial color="#5c5550" />
           </mesh>
-          <group ref={kneeR} position={[0, -0.32, 0]}>
-            <mesh position={[0, -0.15, 0]}>
-              <capsuleGeometry args={[0.048, 0.2, 5, 10]} />
+          <group ref={kneeR} position={[0, -0.12, 0]}>
+            <mesh position={[0, -0.05, 0]}>
+              <capsuleGeometry args={[0.055, 0.05, 5, 10]} />
               <meshStandardMaterial color="#5c5550" />
             </mesh>
-            <mesh position={[0, -0.27, 0.04]} rotation={[0.18, 0, 0]}>
-              <boxGeometry args={[0.09, 0.045, 0.16]} />
-              <meshStandardMaterial color="#3f3a37" roughness={0.6} />
+            <mesh position={[0, -0.09, 0.03]}>
+              <sphereGeometry args={[0.058, 12, 12]} />
+              <meshStandardMaterial color="#3f3a37" roughness={0.55} />
             </mesh>
           </group>
         </group>
 
-        <group ref={spine} position={[0, 0.06, 0]}>
-          <mesh position={[0, 0.16, 0]}>
-            <capsuleGeometry args={[0.145, 0.22, 6, 14]} />
+        <group ref={spine} position={[0, 0.05, 0]}>
+          <mesh position={[0, 0.08, 0]} scale={[1.12, 0.85, 1]}>
+            <sphereGeometry args={[0.15, 18, 18]} />
             <meshStandardMaterial {...shirtMat} />
           </mesh>
 
-          <group ref={chest} position={[0, 0.28, 0]}>
-            <mesh position={[0, 0.04, 0.02]} rotation={[0.2, 0, 0]}>
-              <circleGeometry args={[0.09, 20]} />
+          <group ref={chest} position={[0, 0.12, 0]}>
+            <mesh position={[0, 0.02, 0.06]} rotation={[0.25, 0, 0]}>
+              <circleGeometry args={[0.07, 20]} />
               <meshStandardMaterial color={accent} roughness={0.5} />
             </mesh>
 
-            <mesh position={[0, 0.16, 0]}>
-              <cylinderGeometry args={[0.045, 0.055, 0.08, 12]} />
-              <meshStandardMaterial color={skin} roughness={0.55} />
-            </mesh>
-
-            <group ref={head} position={[0, 0.32, 0]}>
+            <group ref={head} position={[0, 0.26, 0]}>
               <mesh>
-                <sphereGeometry args={[0.155, 28, 28]} />
-                <meshStandardMaterial color={skin} roughness={0.5} />
+                <sphereGeometry args={[0.23, 28, 28]} />
+                <meshStandardMaterial color={skin} roughness={0.48} />
               </mesh>
-              <mesh position={[0, 0.08, -0.02]} rotation={[0.55, 0, 0]}>
-                <sphereGeometry args={[0.125, 20, 16, 0, Math.PI * 2, 0, 1.15]} />
+              <mesh position={[0, 0.1, -0.02]} rotation={[0.45, 0, 0]}>
+                <sphereGeometry args={[0.2, 20, 16, 0, Math.PI * 2, 0, 1.2]} />
                 <meshStandardMaterial color={hair} roughness={0.72} />
               </mesh>
-              <mesh position={[0.11, 0.02, 0.04]} rotation={[0, 0, -0.4]}>
-                <sphereGeometry args={[0.045, 12, 12]} />
+              <mesh position={[0.155, 0.02, 0.04]} rotation={[0, 0, -0.35]}>
+                <sphereGeometry args={[0.065, 12, 12]} />
                 <meshStandardMaterial color={hair} roughness={0.72} />
               </mesh>
-              <mesh position={[-0.11, 0.02, 0.04]} rotation={[0, 0, 0.4]}>
-                <sphereGeometry args={[0.045, 12, 12]} />
+              <mesh position={[-0.155, 0.02, 0.04]} rotation={[0, 0, 0.35]}>
+                <sphereGeometry args={[0.065, 12, 12]} />
                 <meshStandardMaterial color={hair} roughness={0.72} />
               </mesh>
-              <mesh position={[0, 0.01, 0.148]} renderOrder={2}>
-                <circleGeometry args={[0.112, 32]} />
+              <mesh position={[0.11, -0.04, 0.175]}>
+                <sphereGeometry args={[0.038, 10, 10]} />
+                <meshStandardMaterial color="#f4c2c2" transparent opacity={0.55} />
+              </mesh>
+              <mesh position={[-0.11, -0.04, 0.175]}>
+                <sphereGeometry args={[0.038, 10, 10]} />
+                <meshStandardMaterial color="#f4c2c2" transparent opacity={0.55} />
+              </mesh>
+              <mesh position={[0, 0.01, 0.218]} renderOrder={2}>
+                <circleGeometry args={[0.155, 32]} />
                 <meshBasicMaterial color="#fff6ea" toneMapped={false} />
               </mesh>
-              <mesh position={[0, 0.01, 0.152]} renderOrder={3}>
-                <circleGeometry args={[0.1, 32]} />
+              <mesh position={[0, 0.01, 0.222]} renderOrder={3}>
+                <circleGeometry args={[0.14, 32]} />
                 <meshBasicMaterial map={texture} toneMapped={false} />
               </mesh>
-              <mesh position={[0, 0.01, 0.154]} renderOrder={4}>
-                <ringGeometry args={[0.1, 0.118, 32]} />
+              <mesh position={[0, 0.01, 0.224]} renderOrder={4}>
+                <ringGeometry args={[0.14, 0.162, 32]} />
                 <meshBasicMaterial color={accent} toneMapped={false} />
               </mesh>
             </group>
 
-            <group ref={armL} position={[-0.175, 0.08, 0]}>
-              <mesh position={[0, -0.12, 0]}>
-                <capsuleGeometry args={[0.042, 0.14, 5, 10]} />
+            <group ref={armL} position={[-0.155, 0.04, 0]}>
+              <mesh position={[0, -0.07, 0]}>
+                <capsuleGeometry args={[0.05, 0.07, 5, 10]} />
                 <meshStandardMaterial color={outfit} />
               </mesh>
-              <group ref={elbowL} position={[0, -0.2, 0]}>
-                <mesh position={[0, -0.1, 0]}>
-                  <capsuleGeometry args={[0.036, 0.12, 5, 10]} />
+              <group ref={elbowL} position={[0, -0.12, 0]}>
+                <mesh position={[0, -0.05, 0]}>
+                  <capsuleGeometry args={[0.045, 0.055, 5, 10]} />
                   <meshStandardMaterial color={skin} roughness={0.55} />
                 </mesh>
-                <group ref={wristL} position={[0, -0.18, 0]}>
-                  <mesh scale={[1.25, 0.7, 0.95]}>
-                    <sphereGeometry args={[0.044, 12, 12]} />
+                <group ref={wristL} position={[0, -0.1, 0]}>
+                  <mesh>
+                    <sphereGeometry args={[0.052, 12, 12]} />
                     <meshStandardMaterial color={skin} roughness={0.55} />
                   </mesh>
                 </group>
               </group>
             </group>
 
-            <group ref={armR} position={[0.175, 0.08, 0]}>
-              <mesh position={[0, -0.12, 0]}>
-                <capsuleGeometry args={[0.042, 0.14, 5, 10]} />
+            <group ref={armR} position={[0.155, 0.04, 0]}>
+              <mesh position={[0, -0.07, 0]}>
+                <capsuleGeometry args={[0.05, 0.07, 5, 10]} />
                 <meshStandardMaterial color={outfit} />
               </mesh>
-              <group ref={elbowR} position={[0, -0.2, 0]}>
-                <mesh position={[0, -0.1, 0]}>
-                  <capsuleGeometry args={[0.036, 0.12, 5, 10]} />
+              <group ref={elbowR} position={[0, -0.12, 0]}>
+                <mesh position={[0, -0.05, 0]}>
+                  <capsuleGeometry args={[0.045, 0.055, 5, 10]} />
                   <meshStandardMaterial color={skin} roughness={0.55} />
                 </mesh>
-                <group ref={wristR} position={[0, -0.18, 0]}>
-                  <mesh scale={[1.25, 0.7, 0.95]}>
-                    <sphereGeometry args={[0.044, 12, 12]} />
+                <group ref={wristR} position={[0, -0.1, 0]}>
+                  <mesh>
+                    <sphereGeometry args={[0.052, 12, 12]} />
                     <meshStandardMaterial color={skin} roughness={0.55} />
                   </mesh>
                 </group>

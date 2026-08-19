@@ -34,7 +34,7 @@ export function actionForTime(t: number): "walk" | "wave" | "dance" | "hug" | "i
 
 export function coupleOffset(t: number, side: "left" | "right") {
   const hugging = t >= 22.5 && t < 28.2;
-  const baseX = side === "left" ? -0.34 : 0.34;
+  const baseX = side === "left" ? -0.28 : 0.28;
   const hugX = side === "left" ? -0.2 : 0.2;
   const sway = Math.sin(t * 0.42) * (hugging ? 0.02 : 0.14);
   const stagger = side === "left" ? 0 : 0.4;

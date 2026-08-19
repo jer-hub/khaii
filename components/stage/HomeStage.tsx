@@ -27,8 +27,8 @@ const DURATIONS: Record<StageAction, number> = {
 };
 
 const HOMES: Record<CharacterId, [number, number]> = {
-  you: [-0.72, 0.14],
-  partner: [0.72, 0.14],
+  you: [-0.52, 0.14],
+  partner: [0.52, 0.14],
 };
 
 export function HomeStage() {
@@ -90,9 +90,9 @@ export function HomeStage() {
       >
         <Canvas
           dpr={[1, 1.6]}
-          camera={{ position: [0, 1.08, 4.25], fov: 40, near: 0.1, far: 20 }}
+          camera={{ position: [0, 0.78, 3.35], fov: 38, near: 0.1, far: 20 }}
           gl={{ antialias: true, alpha: true }}
-          onCreated={({ camera }) => camera.lookAt(0, 0.5, 0)}
+          onCreated={({ camera }) => camera.lookAt(0, 0.38, 0)}
           className="touch-none h-full w-full"
         >
           <color attach="background" args={["#f3ebe2"]} />
