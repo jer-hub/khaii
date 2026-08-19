@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-cream: #faf9f6;
+  --color-rose: #f4c2c2;
+  --color-rose-deep: #e39a9a;
+  --color-sage: #a9b8a9;
+  --color-sage-deep: #7e917e;
+  --color-charcoal: #2c2c2c;
+  --color-ink: #5c5854;
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+}
+
+html,
+body {
+  background: #faf9f6;
+  color: #2c2c2c;
+}
+
+body {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+::selection {
+  background: #f4c2c2;
+  color: #2c2c2c;
+}
+
+input,
+button,
+textarea {
+  font: inherit;
+}
+
+/* Hide number input spinners if any, keep taps comfortable on iOS. */
+input[type="password"],
+input[type="text"] {
+  font-size: 16px;
+}
+
+.polaroid-shadow {
+  box-shadow:
+    0 1px 1px rgba(44, 44, 44, 0.04),
+    0 8px 24px rgba(44, 44, 44, 0.08),
+    0 20px 40px rgba(44, 44, 44, 0.06);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.ticket-notch {
+  background:
+    radial-gradient(circle at 0 50%, transparent 10px, #fff 10.5px),
+    radial-gradient(circle at 100% 50%, transparent 10px, #fff 10.5px);
+  background-color: #fff;
+}
+
+@supports (padding: max(0px)) {
+  .safe-bottom {
+    padding-bottom: max(1.1rem, env(safe-area-inset-bottom));
+  }
+}
