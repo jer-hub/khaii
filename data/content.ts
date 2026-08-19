@@ -236,7 +236,7 @@ export const REASONS: Reason[] = [
   {
     id: "r3",
     title: "How you make a place feel like home",
-    body: "A lamp, a playlist, a mug in the right spot. You turn rooms into somewhere I want to stay.",
+    body: "A partner, creating playlist, your comfort, you turn home into somewhere I want to stay.",
   },
   {
     id: "r4",
