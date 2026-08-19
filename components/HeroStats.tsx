@@ -116,7 +116,7 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         transition={{ delay: 0.16 }}
         className="mt-2 text-sm leading-relaxed text-ink"
       >
-        A living little room for two — drag us, drop our photos, then play.
+        Drag us, drop our photos, then play.
       </motion.p>
 
       <motion.div
