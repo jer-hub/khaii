@@ -124,8 +124,8 @@ function PolaroidCard({
             WebkitBackfaceVisibility: "hidden",
           }}
         >
-          <div className="flex h-full flex-col justify-between">
-            <div>
+          <div className="flex h-full flex-col justify-between overflow-hidden">
+            <div className="min-h-0 overflow-y-auto">
               <p className="font-serif text-base leading-snug text-charcoal">{memory.title}</p>
               <p className="mt-2 text-[12px] leading-relaxed text-ink">{memory.story}</p>
             </div>

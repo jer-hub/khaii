@@ -25,7 +25,7 @@ const ICONS: Record<CouponIcon, typeof Sparkles> = {
 };
 
 export function CouponBook() {
-  const { isRedeemed, redeem, ready } = useRedeemedCoupons();
+  const { isRedeemed, redeem } = useRedeemedCoupons();
   const [burstId, setBurstId] = useState(0);
 
   function handleRedeem(id: string) {
@@ -55,7 +55,7 @@ export function CouponBook() {
           >
             <CouponCard
               coupon={coupon}
-              redeemed={ready ? isRedeemed(coupon.id) : false}
+              redeemed={isRedeemed(coupon.id)}
               onRedeem={() => handleRedeem(coupon.id)}
             />
           </motion.div>
