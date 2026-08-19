@@ -40,7 +40,7 @@ export function ReasonsDeck() {
               key="done"
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass absolute inset-x-4 top-8 flex h-[300px] flex-col items-center justify-center rounded-3xl px-8 text-center shadow-[0_16px_40px_rgba(44,44,44,0.08)]"
+              className="absolute inset-x-4 top-8 flex h-[300px] flex-col items-center justify-center rounded-3xl bg-white px-8 text-center shadow-[0_16px_40px_rgba(44,44,44,0.08)] ring-1 ring-black/5"
             >
               <Heart className="mb-4 h-8 w-8 fill-rose text-rose-deep" />
               <p className="font-serif text-2xl text-charcoal">That&apos;s all — for now</p>
@@ -88,7 +88,7 @@ export function ReasonsDeck() {
                     onDragEnd={isTop ? handleDragEnd : undefined}
                     whileDrag={{ cursor: "grabbing" }}
                     style={{ zIndex: 10 - stackIndex }}
-                    className="glass absolute inset-x-2 top-0 h-[320px] cursor-grab rounded-3xl p-7 shadow-[0_18px_40px_rgba(44,44,44,0.1)]"
+                    className="absolute inset-x-2 top-0 h-[320px] cursor-grab rounded-3xl bg-white p-7 shadow-[0_18px_40px_rgba(44,44,44,0.1)] ring-1 ring-black/5"
                   >
                     <p className="text-[11px] tracking-[0.24em] text-sage-deep uppercase">
                       Reason {index + stackIndex + 1} of {REASONS.length}

@@ -35,24 +35,26 @@ export function AppShell() {
       <main
         className={`relative min-h-0 flex-1 ${tab === "story" ? "overflow-hidden" : "overflow-y-auto"}`}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: tab === "story" ? 0 : 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: tab === "story" ? 0 : -8 }}
-            transition={{ duration: 0.28 }}
-            className={tab === "story" ? "h-full" : undefined}
-          >
-            {tab === "home" && <HeroStats onOpen={(view) => setTab(view)} />}
-            {tab === "memories" && <MemoryCards />}
-            {tab === "coupons" && <CouponBook />}
-            {tab === "reasons" && <ReasonsDeck />}
-            {tab === "game" && <MemoryGame onBack={goHome} />}
-            {tab === "quiz" && <FlashcardQuiz onBack={goHome} />}
-            {tab === "story" && <StoryViewer onBack={goHome} />}
-          </motion.div>
-        </AnimatePresence>
+        <div className={tab === "story" ? "absolute inset-0" : undefined}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={tab}
+              initial={{ opacity: tab === "story" ? 1 : 0, y: tab === "story" ? 0 : 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: tab === "story" ? 0 : -8 }}
+              transition={{ duration: 0.28 }}
+              className={tab === "story" ? "h-full" : undefined}
+            >
+              {tab === "home" && <HeroStats onOpen={(view) => setTab(view)} />}
+              {tab === "memories" && <MemoryCards />}
+              {tab === "coupons" && <CouponBook />}
+              {tab === "reasons" && <ReasonsDeck />}
+              {tab === "game" && <MemoryGame onBack={goHome} />}
+              {tab === "quiz" && <FlashcardQuiz onBack={goHome} />}
+              {tab === "story" && <StoryViewer onBack={goHome} />}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
 
       {tab !== "story" && (

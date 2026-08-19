@@ -1,12 +1,13 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import { ArrowUp, Hand, Heart, HeartHandshake, Music } from "lucide-react";
 import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 import { CHARACTERS, STAGE_ACTIONS, type CharacterId, type StageAction } from "@/data/content";
 import { readImageFile, useAvatars } from "@/hooks/useAvatars";
 import { DragLayer, type DragOrigin } from "@/components/stage/DragLayer";
+import { separateFromOther } from "@/components/stage/collision";
 import { FloatingHearts } from "@/components/stage/FloatingHearts";
 import { Person } from "@/components/stage/Person";
 
@@ -20,16 +21,29 @@ const ACTION_ICONS = {
 
 const DURATIONS: Record<StageAction, number> = {
   wave: 2400,
-  hug: 3400,
+  hug: 5200,
   dance: 4000,
-  kiss: 3000,
+  kiss: 3600,
   jump: 900,
 };
 
 const HOMES: Record<CharacterId, [number, number]> = {
-  you: [-0.72, 0.14],
-  partner: [0.72, 0.14],
+  you: [-0.52, 0.14],
+  partner: [0.52, 0.14],
 };
+
+function HomeCamera({ hugging }: { hugging: boolean }) {
+  useFrame(({ camera }, delta) => {
+    const dt = Math.min(delta, 0.033);
+    const ease = 1 - Math.exp(-dt * 4.2);
+    const targetZ = hugging ? 2.72 : 3.35;
+    const targetY = hugging ? 0.68 : 0.78;
+    camera.position.z += (targetZ - camera.position.z) * ease;
+    camera.position.y += (targetY - camera.position.y) * ease;
+    camera.lookAt(0, hugging ? 0.32 : 0.38, 0);
+  });
+  return null;
+}
 
 export function HomeStage() {
   const { photos, setPhoto } = useAvatars();
@@ -41,6 +55,8 @@ export function HomeStage() {
   const fileYou = useRef<HTMLInputElement>(null);
   const filePartner = useRef<HTMLInputElement>(null);
   const originRef = useRef<DragOrigin>({ x: 0, y: 0, dragged: false });
+  const youBody = useRef({ x: HOMES.you[0], z: HOMES.you[1] });
+  const partnerBody = useRef({ x: HOMES.partner[0], z: HOMES.partner[1] });
 
   function play(next: StageAction) {
     window.clearTimeout(timer.current);
@@ -56,8 +72,11 @@ export function HomeStage() {
   }
 
   const movePerson = useCallback((id: CharacterId, x: number, z: number) => {
-    if (id === "you") setYou({ x, z });
-    else setPartner({ x, z });
+    if (id === "you") {
+      setYou(separateFromOther(x, z, partnerBody.current.x, partnerBody.current.z, youBody.current));
+    } else {
+      setPartner(separateFromOther(x, z, youBody.current.x, youBody.current.z, partnerBody.current));
+    }
   }, []);
 
   const releasePerson = useCallback(() => setGrab(null), []);
@@ -90,13 +109,14 @@ export function HomeStage() {
       >
         <Canvas
           dpr={[1, 1.6]}
-          camera={{ position: [0, 1.55, 3.7], fov: 36, near: 0.1, far: 20 }}
+          camera={{ position: [0, 0.78, 3.35], fov: 38, near: 0.1, far: 20 }}
           gl={{ antialias: true, alpha: true }}
-          onCreated={({ camera }) => camera.lookAt(0, 0.7, 0)}
+          onCreated={({ camera }) => camera.lookAt(0, 0.38, 0)}
           className="touch-none h-full w-full"
         >
           <color attach="background" args={["#f3ebe2"]} />
           <Suspense fallback={null}>
+            <HomeCamera hugging={action === "hug"} />
             <DragLayer
               grab={grab}
               originRef={originRef}
@@ -129,6 +149,8 @@ export function HomeStage() {
               side="left"
               action={action}
               grabbed={grab === "you"}
+              solidRef={youBody}
+              otherRef={partnerBody}
               onPointerDown={(event) => {
                 originRef.current = {
                   x: event.nativeEvent.clientX,
@@ -149,6 +171,8 @@ export function HomeStage() {
               side="right"
               action={action}
               grabbed={grab === "partner"}
+              solidRef={partnerBody}
+              otherRef={youBody}
               onPointerDown={(event) => {
                 originRef.current = {
                   x: event.nativeEvent.clientX,
@@ -159,7 +183,8 @@ export function HomeStage() {
               }}
             />
 
-            <FloatingHearts active={action === "kiss" || action === "hug"} />
+            <FloatingHearts active={action === "hug"} kind="orb" />
+            <FloatingHearts active={action === "kiss"} kind="heart" />
             <ContactShadows position={[0, 0, 0]} opacity={0.32} scale={6.5} blur={2.2} far={2.8} />
           </Suspense>
         </Canvas>
@@ -211,7 +236,9 @@ export function HomeStage() {
               className={`rounded-2xl px-1 py-2 text-center shadow-sm ring-1 transition-colors ${
                 action === item.id
                   ? "bg-charcoal text-cream ring-charcoal"
-                  : "bg-white/75 text-charcoal ring-white hover:bg-rose/40"
+                  : item.id === "hug"
+                    ? "bg-rose/55 text-charcoal ring-rose hover:bg-rose/80"
+                    : "bg-white/75 text-charcoal ring-white hover:bg-rose/40"
               }`}
             >
               <Icon className="mx-auto mb-1 h-4 w-4" />

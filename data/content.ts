@@ -3,22 +3,22 @@
  * PERSONALIZE THIS FILE
  *
  * Everything the gift site displays lives here — name, password, dates,
- * memories, coupons, reasons, game pairs, quiz cards, story scenes,
+ * memories (`MEMORIES` titles, captions, and optional `photo` paths under `public/memories/`),
  * and the 3D couple (names + placeholder photos).
  * Edit these values; you shouldn't need to touch the rest of the app.
  * ──────────────────────────────────────────────────────────────────────────
  */
 
 export const SITE = {
-  partnerName: "My Love",
-  yourName: "Me",
+  partnerName: "Khai",
+  yourName: "Toto",
   appName: "Our Journey",
   tagline: "A little corner of the internet, just for us.",
-  /** Compared case-insensitively; punctuation is ignored. "02/14" matches "0214". */
-  password: "0214",
+  /** Compared case-insensitively; punctuation is ignored. "05/19/26" matches "051926". */
+  password: "051926",
   passwordHint: "Hint: a date we both remember.",
-  /** ISO date used to calculate "Days Together". */
-  startDate: "2024-02-14",
+  /** ISO date used to calculate "Days Together" (calendar days from this date to today). */
+  startDate: "2026-05-19",
 } as const;
 
 export const CHARACTERS = {
@@ -42,7 +42,7 @@ export const CHARACTERS = {
 
 export const STAGE_ACTIONS = [
   { id: "wave", label: "Wave", hint: "A little hello" },
-  { id: "hug", label: "Hug", hint: "Come closer" },
+  { id: "hug", label: "Hug", hint: "Squeeze in close" },
   { id: "dance", label: "Dance", hint: "Sway with me" },
   { id: "kiss", label: "Kiss", hint: "Lean in" },
   { id: "jump", label: "Jump", hint: "Up we go" },
@@ -52,9 +52,9 @@ export type CharacterId = keyof typeof CHARACTERS;
 export type StageAction = (typeof STAGE_ACTIONS)[number]["id"];
 
 export const STATS = {
-  citiesVisited: 8,
-  moviesWatched: 42,
-  cupsOfCoffee: 167,
+  citiesVisited: 1,
+  moviesWatched: 2,
+  cupsOfCoffee: 6,
 } as const;
 
 export type MemoryMotif =
@@ -75,68 +75,90 @@ export type Memory = {
   story: string;
   motif: MemoryMotif;
   tilt: number;
+  /** Static photo under `public/`, e.g. `/memories/01.jpg`. */
+  photo?: string;
 };
 
 export const MEMORIES: Memory[] = [
   {
-    id: "first-coffee",
-    title: "First coffee",
-    date: "February 14, 2024",
-    location: "The little corner cafe",
-    story:
-      "The tables were too small and the music was a little too loud. I still remember how you wrapped both hands around the cup, and how the afternoon somehow lasted longer than it should have.",
-    motif: "coffee",
-    tilt: -3.5,
-  },
-  {
-    id: "rainy-walk",
-    title: "Rain we didn't plan for",
-    date: "April 3, 2024",
-    location: "Downtown side streets",
-    story:
-      "We didn't bring an umbrella. You laughed first, then I did, and we just kept walking. I think that's when I knew ordinary weather with you would never feel ordinary.",
-    motif: "rain",
-    tilt: 2.8,
-  },
-  {
-    id: "sunset-picnic",
-    title: "Sunset picnic",
-    date: "June 21, 2024",
-    location: "The hill above the river",
-    story:
-      "Cheese, fruit, a blanket that wouldn't stay put, and the sky showing off. You leaned against my shoulder without saying anything. I didn't need you to.",
-    motif: "sunset",
-    tilt: -1.6,
-  },
-  {
-    id: "the-concert",
-    title: "That concert",
-    date: "August 9, 2024",
-    location: "The packed little venue",
-    story:
-      "You knew every word. I spent half the night watching you instead of the stage. Still the better view.",
+    id: "thatch-selfie",
+    title: "ain't we cool here",
+    date: "",
+    location: "at bhauz",
+    story: "picture mi bago nag hawa balay",
     motif: "stars",
-    tilt: 4.2,
+    tilt: -3.2,
+    photo: "/memories/01.jpg",
   },
   {
-    id: "weekend-away",
-    title: "Wrong turn, right place",
-    date: "October 12, 2024",
-    location: "A town we found by accident",
-    story:
-      "The map was useless and the reservation was in the next town over. We stayed anyway. Best wrong turn we've ever taken.",
-    motif: "picnic",
-    tilt: -2.4,
-  },
-  {
-    id: "cooking-night",
-    title: "The pasta incident",
-    date: "January 18, 2025",
-    location: "Our kitchen",
-    story:
-      "The sauce split, the timer lied, and we ate it anyway sitting on the floor. The pasta was a disaster. The evening wasn't.",
+    id: "couch-peace",
+    title: "Happy GF day, my love",
+    date: "",
+    location: "at davao airport view",
+    story: "first time giving her flowers",
     motif: "home",
-    tilt: 1.8,
+    tilt: 2.4,
+    photo: "/memories/02.jpg",
+  },
+  {
+    id: "mirror-night",
+    title: "kwikie sa JH Garden, Eme",
+    date: "",
+    location: "at brgy.magtuod",
+    story: "detour date after mag judge sa linggo ng kabataan",
+    motif: "rain",
+    tilt: -1.8,
+    photo: "/memories/03.jpg",
+  },
+  {
+    id: "cafe-table",
+    title: "Kadayawan Fest with you",
+    date: "",
+    location: "at magsaysay park",
+    story: "tuyok tuyok mi ani sa magsaysay park",
+    motif: "coffee",
+    tilt: 3.1,
+    photo: "/memories/04.jpg",
+  },
+  {
+    id: "green-leaves",
+    title: "Food namo sa balai samal",
+    date: "",
+    location: "at balai samal",
+    story: "cravings satisfied",
+    motif: "picnic",
+    tilt: -2.6,
+    photo: "/memories/05.jpg",
+  },
+  {
+    id: "pink-flowers",
+    title: "At Balai Samal",
+    date: "",
+    location: "at balai samal",
+    story: "first date namo sa samal naulanan mi diri tas nakatulog sa ferry boat pauli haha",
+    motif: "sunset",
+    tilt: 1.7,
+    photo: "/memories/06.jpg",
+  },
+  {
+    id: "two-glasses",
+    title: "kay di afford ang mt.apo, sa apo cafe nalang",
+    date: "",
+    location: "sa apo cafe",
+    story: "first date namo sa halal na cafe",
+    motif: "coffee",
+    tilt: -4.0,
+    photo: "/memories/07.jpg",
+  },
+  {
+    id: "caps-and-shades",
+    title: "inigat sa baroks",
+    date: "",
+    location: "at baroks",
+    story: "gi ubanan ko niya buhat work, iloveyouuu",
+    motif: "stars",
+    tilt: 2.2,
+    photo: "/memories/08.jpg",
   },
 ];
 
@@ -214,7 +236,7 @@ export const REASONS: Reason[] = [
   {
     id: "r3",
     title: "How you make a place feel like home",
-    body: "A lamp, a playlist, a mug in the right spot. You turn rooms into somewhere I want to stay.",
+    body: "A partner, creating playlist, your comfort, you turn home into somewhere I want to stay.",
   },
   {
     id: "r4",
@@ -234,7 +256,7 @@ export const REASONS: Reason[] = [
   {
     id: "r7",
     title: "How you remember the tiny things",
-    body: "The order I like my coffee. The story I told once. The song that was playing. You keep a quiet archive of me.",
+    body: "The flavor I wanted, times you had to give me coke. The story I told once. The song that was playing. You keep a quiet archive of me.",
   },
   {
     id: "r8",
@@ -252,14 +274,9 @@ export const REASONS: Reason[] = [
     body: "Not loudly for show — steadily, specifically, in a way that makes me feel chosen on ordinary Tuesdays.",
   },
   {
-    id: "r11",
-    title: "Your sense of wonder",
-    body: "You still point at the moon. You still get excited about good bread. Please never stop.",
-  },
-  {
     id: "r12",
     title: "The future I can picture",
-    body: "Not a perfect one. A real one. Groceries and inside jokes and growing older next to you, on purpose.",
+    body: "Not a perfect one. A real one. Traveling together and inside jokes ang growing further next to you, on purpose.",
   },
   {
     id: "r13",
@@ -295,85 +312,97 @@ export type QuizCard = {
 export const QUIZ_CARDS: QuizCard[] = [
   {
     id: "q1",
-    prompt: "Where did we have our first coffee?",
-    answer: "The little corner cafe",
-    choices: ["The little corner cafe", "A train station kiosk", "Your kitchen", "The park bench"],
+    prompt: "asa ta first nag communicate",
+    answer: "COBE Office",
+    choices: ["COBE Office", "Hallway", "Kingdome", "Chat"],
   },
   {
     id: "q2",
-    prompt: "What did we forget on that rainy walk?",
-    answer: "An umbrella",
-    choices: ["The keys", "An umbrella", "A map", "Your jacket"],
+    prompt: "which is the first drink have we both had?",
+    answer: "Matcha",
+    choices: ["Cofee", "Coke", "Matcha", "Water"],
   },
   {
     id: "q3",
-    prompt: "How many cities have we visited together?",
-    answer: "8",
-    choices: ["3", "8", "12", "21"],
+    prompt: "Unsa atung gi pustahan way back sa graduation of batch 25-26?",
+    answer: "Unsa time mahuman ang graduation",
+    choices: ["Tagdon ko sa akong mga students", "Pila ka tao mag papicture sa akoa", "Unsa time mahuman and awarding", "Unsa time mahuman ang graduation"],
   },
   {
     id: "q4",
-    prompt: "What kitchen disaster still made a perfect night?",
-    answer: "The pasta",
-    choices: ["The cake", "The pasta", "Burnt toast", "Soup that never thickened"],
+    prompt: "Kinsa ang dahilann ang nag brought us together jud?",
+    answer: "atoang dean",
+    choices: ["nag chat ko", "friends", "atoang dean", "gi invite ko nimo"],
   },
   {
     id: "q5",
-    prompt: "Where was the picnic when the sky showed off?",
-    answer: "The hill above the river",
-    choices: ["The beach parking lot", "The hill above the river", "A rooftop", "Your backyard"],
+    prompt: "Pila ka peak atung na abot sa Toril Hike nato?",
+    answer: "3",
+    choices: ["3", "2", "1", "4"],
   },
-  {
-    id: "q6",
-    prompt: "At the concert, what were you doing?",
-    answer: "Singing every word",
-    choices: ["Checking the time", "Singing every word", "Buying merch", "Finding seats"],
-  },
-  {
-    id: "q7",
-    prompt: "How did we find that unexpected town?",
-    answer: "A wrong turn",
-    choices: ["A guidebook", "A wrong turn", "A friend's tip", "A train we missed"],
-  },
-  {
-    id: "q8",
-    prompt: "About how many cups of coffee is this whole story?",
-    answer: "167",
-    choices: ["42", "89", "167", "300"],
-  },
+  // {
+  //   id: "q6",
+  //   prompt: "At the concert, what were you doing?",
+  //   answer: "Singing every word",
+  //   choices: ["Checking the time", "Singing every word", "Buying merch", "Finding seats"],
+  // },
+  // {
+  //   id: "q7",
+  //   prompt: "How did we find that unexpected town?",
+  //   answer: "A wrong turn",
+  //   choices: ["A guidebook", "A wrong turn", "A friend's tip", "A train we missed"],
+  // },
+  // {
+  //   id: "q8",
+  //   prompt: "About how many cups of coffee is this whole story?",
+  //   answer: "167",
+  //   choices: ["42", "89", "167", "300"],
+  // },
 ];
 
-export type StoryScene = {
-  id: string;
-  title: string;
-  date?: string;
-  body: string;
-  motif: ArtMotif;
-};
+export const STORY_LOOP_SECONDS = 30;
+export const SEASON_SECONDS = 7.5;
 
-export const STORY_SCENES: StoryScene[] = [
+export const SEASON_STORY = [
   {
-    id: "intro",
-    title: "Once upon a us",
-    date: "The beginning",
-    body: "Not a fairytale — just the days we actually lived, lined up so you can watch them again.",
-    motif: "heart",
+    id: "spring",
+    title: "Spring, we set out",
+    line: "Petals on the path, a picnic packed, the year just opening.",
+    sky: "#f3dce6",
+    ground: "#8fbe8a",
+    fog: "#f7e9ee",
+    light: "#ffe6f0",
   },
-  ...MEMORIES.map((memory) => ({
-    id: memory.id,
-    title: memory.title,
-    date: memory.date,
-    body: memory.story,
-    motif: memory.motif,
-  })),
   {
-    id: "always",
-    title: "And still",
-    date: "Today",
-    body: "The best part is that the story is not finished. It just keeps choosing you.",
-    motif: "ring",
+    id: "summer",
+    title: "Summer, we linger",
+    line: "Gold light, a shared umbrella, the afternoon that refused to end.",
+    sky: "#f6e2b8",
+    ground: "#c9b15a",
+    fog: "#f8ecc8",
+    light: "#ffe7a8",
   },
-];
+  {
+    id: "autumn",
+    title: "Autumn, we wander",
+    line: "Leaves underfoot, a lantern for later, every wrong turn still ours.",
+    sky: "#e8c09a",
+    ground: "#b56a3a",
+    fog: "#f0d3b0",
+    light: "#ffc089",
+  },
+  {
+    id: "winter",
+    title: "Winter, we hold",
+    line: "Snow hush, two coats, a long hug that does not let go.",
+    sky: "#d5e3ee",
+    ground: "#e8eef4",
+    fog: "#e7eef5",
+    light: "#dfefff",
+  },
+] as const;
+
+export type SeasonId = (typeof SEASON_STORY)[number]["id"];
 
 export const TABS = [
   { id: "home", label: "Home" },

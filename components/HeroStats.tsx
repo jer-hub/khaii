@@ -17,6 +17,11 @@ import type { PlayViewId } from "@/data/content";
 import { SITE, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 
+function startOfTogether() {
+  const [year, month, day] = SITE.startDate.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 const HomeStage = dynamic(
   () => import("@/components/stage/HomeStage").then((mod) => mod.HomeStage),
   {
@@ -32,8 +37,7 @@ const cards = [
     key: "days",
     label: "Days together",
     icon: HeartHandshake,
-    getValue: () =>
-      Math.max(1, differenceInCalendarDays(new Date(), new Date(SITE.startDate))),
+    getValue: () => Math.max(1, differenceInCalendarDays(new Date(), startOfTogether())),
   },
   {
     key: "cities",
@@ -79,7 +83,7 @@ const playCards: {
   {
     id: "story",
     title: "Our story",
-    detail: "Sit back and watch it unfold.",
+    detail: "A year with you, in thirty seconds.",
     icon: Clapperboard,
     tint: "bg-rose/30",
   },
@@ -104,7 +108,7 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         transition={{ delay: 0.08 }}
         className="mt-1.5 font-serif text-[1.75rem] leading-tight text-charcoal"
       >
-        Welcome to Our Story, {SITE.partnerName}
+        Welcome to our story, {SITE.yourName} x {SITE.partnerName}
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 12 }}
@@ -112,7 +116,7 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         transition={{ delay: 0.16 }}
         className="mt-2 text-sm leading-relaxed text-ink"
       >
-        A living little room for two — drag us, drop our photos, then play.
+        Drag us, drop our photos, then play.
       </motion.p>
 
       <motion.div
