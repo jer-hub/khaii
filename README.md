@@ -12,9 +12,15 @@ All of the copy, dates, and numbers live in [`data/content.ts`](data/content.ts)
 - `MEMORIES`, `COUPONS`, `REASONS`, `STATS` — the scrapbook, coupon book, swipe deck, and dashboard
 - `GAME_PAIRS` — tiles for the **Memory match** game (Home → Play with me)
 - `QUIZ_CARDS` — questions and choices for the **Flashcard quiz**
-- `STORY_SCENES` — scenes for the **Our story** viewer (intro + memories + closing beat)
+- `STORY_SCENES` — scenes for the **Our story** viewer
+- `CHARACTERS` — names and default head photos for the 3D couple on Home (`public/avatars/`)
+- `STAGE_ACTIONS` — the five animations (wave, hug, dance, kiss, jump)
 
 Default password: **`0214`**
+
+## Home stage
+
+The Home tab has a live 3D couple. Drag them around the floor, drop (or pick) a photo onto a head — it saves in `localStorage` — and tap **Wave / Hug / Dance / Kiss / Jump**.
 
 ## Play with me
 

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { differenceInCalendarDays } from "date-fns";
 import { motion, useInView } from "framer-motion";
 import {
@@ -16,6 +17,16 @@ import type { PlayViewId } from "@/data/content";
 import { SITE, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 
+const HomeStage = dynamic(
+  () => import("@/components/stage/HomeStage").then((mod) => mod.HomeStage),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[340px] animate-pulse rounded-[1.6rem] bg-[#f3ebe2]" />
+    ),
+  },
+);
+
 const cards = [
   {
     key: "days",
@@ -23,28 +34,24 @@ const cards = [
     icon: HeartHandshake,
     getValue: () =>
       Math.max(1, differenceInCalendarDays(new Date(), new Date(SITE.startDate))),
-    tint: "bg-rose/35",
   },
   {
     key: "cities",
-    label: "Cities visited",
+    label: "Cities",
     icon: MapPin,
     getValue: () => STATS.citiesVisited,
-    tint: "bg-sage/35",
   },
   {
     key: "movies",
-    label: "Movies watched",
+    label: "Movies",
     icon: Film,
     getValue: () => STATS.moviesWatched,
-    tint: "bg-rose/25",
   },
   {
     key: "coffee",
-    label: "Cups of coffee",
+    label: "Coffees",
     icon: Coffee,
     getValue: () => STATS.cupsOfCoffee,
-    tint: "bg-sage/25",
   },
 ] as const;
 
@@ -80,10 +87,10 @@ const playCards: {
 
 export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
   const gridRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(gridRef, { once: true, amount: 0.35 });
+  const inView = useInView(gridRef, { once: true, amount: 0.4 });
 
   return (
-    <section className="px-5 pb-6 pt-8">
+    <section className="px-5 pb-6 pt-7">
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,7 +102,7 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
-        className="mt-2 font-serif text-[1.9rem] leading-tight text-charcoal"
+        className="mt-1.5 font-serif text-[1.75rem] leading-tight text-charcoal"
       >
         Welcome to Our Story, {SITE.partnerName}
       </motion.h1>
@@ -103,37 +110,42 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.16 }}
-        className="mt-3 max-w-[20rem] text-sm leading-relaxed text-ink"
+        className="mt-2 text-sm leading-relaxed text-ink"
       >
-        A small collection of days, places, and reasons — made just for you.
+        A living little room for two — drag us, drop our photos, then play.
       </motion.p>
 
-      <div ref={gridRef} className="mt-8 grid grid-cols-2 gap-3">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mt-5"
+      >
+        <HomeStage />
+      </motion.div>
+
+      <div ref={gridRef} className="mt-5 grid grid-cols-4 gap-2">
         {cards.map((card, index) => {
           const Icon = card.icon;
           return (
             <motion.article
               key={card.key}
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.08 * index, duration: 0.45 }}
-              className="glass rounded-2xl p-4 shadow-[0_10px_30px_rgba(44,44,44,0.05)]"
+              transition={{ delay: 0.05 * index, duration: 0.4 }}
+              className="glass rounded-2xl px-2 py-3 text-center shadow-[0_8px_24px_rgba(44,44,44,0.04)]"
             >
-              <div
-                className={`mb-4 flex h-9 w-9 items-center justify-center rounded-full ${card.tint}`}
-              >
-                <Icon className="h-4 w-4 text-charcoal" />
-              </div>
-              <p className="font-serif text-3xl text-charcoal">
+              <Icon className="mx-auto h-3.5 w-3.5 text-sage-deep" />
+              <p className="mt-1 font-serif text-xl text-charcoal">
                 <CountUp value={card.getValue()} inView={inView} />
               </p>
-              <p className="mt-1 text-xs tracking-wide text-ink">{card.label}</p>
+              <p className="mt-0.5 text-[10px] leading-tight text-ink">{card.label}</p>
             </motion.article>
           );
         })}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-7">
         <p className="text-xs font-medium tracking-[0.26em] text-sage-deep uppercase">
           Play with me
         </p>
