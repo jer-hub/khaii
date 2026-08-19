@@ -276,7 +276,7 @@ export const REASONS: Reason[] = [
   {
     id: "r12",
     title: "The future I can picture",
-    body: "Not a perfect one. A real one. Groceries and inside jokes and growing older next to you, on purpose.",
+    body: "Not a perfect one. A real one. Traveling together and inside jokes ang growing further next to you, on purpose.",
   },
   {
     id: "r13",
