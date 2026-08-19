@@ -75,7 +75,7 @@ export type Memory = {
   story: string;
   motif: MemoryMotif;
   tilt: number;
-  /** Path under `public/`, e.g. `/memories/thatch.jpg`. Leave empty and drop a photo onto the polaroid. */
+  /** Static photo under `public/`, e.g. `/memories/01.jpg`. */
   photo?: string;
 };
 
@@ -312,52 +312,52 @@ export type QuizCard = {
 export const QUIZ_CARDS: QuizCard[] = [
   {
     id: "q1",
-    prompt: "Where did we have our first coffee?",
-    answer: "The little corner cafe",
-    choices: ["The little corner cafe", "A train station kiosk", "Your kitchen", "The park bench"],
+    prompt: "asa ta first nag communicate",
+    answer: "COBE Office",
+    choices: ["COBE Office", "Hallway", "Kingdome", "Chat"],
   },
   {
     id: "q2",
-    prompt: "What did we forget on that rainy walk?",
-    answer: "An umbrella",
-    choices: ["The keys", "An umbrella", "A map", "Your jacket"],
+    prompt: "which is the first drink have we both had?",
+    answer: "Matcha",
+    choices: ["Cofee", "Coke", "Matcha", "Water"],
   },
   {
     id: "q3",
-    prompt: "How many cities have we visited together?",
-    answer: "8",
-    choices: ["3", "8", "12", "21"],
+    prompt: "Unsa atung gi pustahan way back sa graduation of batch 25-26?",
+    answer: "Unsa time mahuman ang graduation",
+    choices: ["Tagdon ko sa akong mga students", "Pila ka tao mag papicture sa akoa", "Unsa time mahuman and awarding", "Unsa time mahuman ang graduation"],
   },
   {
     id: "q4",
-    prompt: "What kitchen disaster still made a perfect night?",
-    answer: "The pasta",
-    choices: ["The cake", "The pasta", "Burnt toast", "Soup that never thickened"],
+    prompt: "Kinsa ang dahilann ang nag brought us together jud?",
+    answer: "atoang dean",
+    choices: ["nag chat ko", "friends", "atoang dean", "gi invite ko nimo"],
   },
   {
     id: "q5",
-    prompt: "Where was the picnic when the sky showed off?",
-    answer: "The hill above the river",
-    choices: ["The beach parking lot", "The hill above the river", "A rooftop", "Your backyard"],
+    prompt: "Pila ka peak atung na abot sa Toril Hike nato?",
+    answer: "3",
+    choices: ["3", "2", "1", "4"],
   },
-  {
-    id: "q6",
-    prompt: "At the concert, what were you doing?",
-    answer: "Singing every word",
-    choices: ["Checking the time", "Singing every word", "Buying merch", "Finding seats"],
-  },
-  {
-    id: "q7",
-    prompt: "How did we find that unexpected town?",
-    answer: "A wrong turn",
-    choices: ["A guidebook", "A wrong turn", "A friend's tip", "A train we missed"],
-  },
-  {
-    id: "q8",
-    prompt: "About how many cups of coffee is this whole story?",
-    answer: "167",
-    choices: ["42", "89", "167", "300"],
-  },
+  // {
+  //   id: "q6",
+  //   prompt: "At the concert, what were you doing?",
+  //   answer: "Singing every word",
+  //   choices: ["Checking the time", "Singing every word", "Buying merch", "Finding seats"],
+  // },
+  // {
+  //   id: "q7",
+  //   prompt: "How did we find that unexpected town?",
+  //   answer: "A wrong turn",
+  //   choices: ["A guidebook", "A wrong turn", "A friend's tip", "A train we missed"],
+  // },
+  // {
+  //   id: "q8",
+  //   prompt: "About how many cups of coffee is this whole story?",
+  //   answer: "167",
+  //   choices: ["42", "89", "167", "300"],
+  // },
 ];
 
 export const STORY_LOOP_SECONDS = 30;
