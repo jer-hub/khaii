@@ -56,10 +56,10 @@ const REST: Pose = {
   headTilt: 0,
   headTurn: 0,
   faceY: 0,
-  armL: { out: 0.82, raise: 0.38, elbow: 0.92 },
-  armR: { out: -0.82, raise: 0.38, elbow: 0.92 },
-  wristL: { flick: 0.18, twist: 0.22 },
-  wristR: { flick: 0.18, twist: -0.22 },
+  armL: { out: 0.4, raise: 0.04, elbow: 0.22 },
+  armR: { out: -0.4, raise: 0.04, elbow: 0.22 },
+  wristL: { flick: 0.06, twist: 0.08 },
+  wristR: { flick: 0.06, twist: -0.08 },
   legL: { lift: 0.06, knee: 0.12 },
   legR: { lift: 0.06, knee: 0.12 },
 };
@@ -94,8 +94,8 @@ function poseFor(
     pose.hipsY = -0.04;
     pose.legL.knee = 0.45;
     pose.legR.knee = 0.45;
-    pose.armL = { out: 0.7, raise: 0.35, elbow: 0.6 };
-    pose.armR = { out: -0.7, raise: 0.35, elbow: 0.6 };
+    pose.armL = { out: 0.45, raise: 0.08, elbow: 0.3 };
+    pose.armR = { out: -0.45, raise: 0.08, elbow: 0.3 };
     pose.wristL = { flick: 0.35, twist: 0.2 };
     pose.wristR = { flick: 0.35, twist: -0.2 };
     pose.headTilt = 0.12;
@@ -118,14 +118,14 @@ function poseFor(
     pose.headTurn = left * 0.07;
     pose.headTilt = -down * 0.04;
     pose.armL = {
-      out: 0.72 + Math.abs(right) * 0.18,
-      raise: 0.32 + right * 0.7,
-      elbow: 0.7 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.45,
+      out: 0.38 + Math.abs(right) * 0.08,
+      raise: right * 0.55,
+      elbow: 0.22 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.35,
     };
     pose.armR = {
-      out: -0.72 - Math.abs(left) * 0.18,
-      raise: 0.32 + left * 0.7,
-      elbow: 0.7 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.45,
+      out: -0.38 - Math.abs(left) * 0.08,
+      raise: left * 0.55,
+      elbow: 0.22 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.35,
     };
     pose.wristL = {
       flick: Math.sin(cadence + Math.PI + wristLag) * 0.55,
@@ -146,9 +146,9 @@ function poseFor(
   } else if (action === "wave") {
     const flap = Math.sin(elapsed * 16.5);
     const snap = Math.sign(flap) * Math.pow(Math.abs(flap), 0.65);
-    pose.armR = { out: -1.45, raise: 0.15 + snap * 0.55, elbow: 0.7 + Math.abs(snap) * 0.35 };
+    pose.armR = { out: -1.35, raise: 0.05 + snap * 0.5, elbow: 0.45 + Math.abs(snap) * 0.3 };
     pose.wristR = { flick: Math.sin(elapsed * 16.5 + 0.5) * 0.95, twist: 0.55 + snap * 0.45 };
-    pose.armL = { out: 0.72, raise: 0.35, elbow: 0.85 };
+    pose.armL = { out: 0.4, raise: 0.04, elbow: 0.22 };
     pose.wristL = { flick: 0.12, twist: 0.18 };
     pose.hipsTilt = -0.14 * inward;
     pose.headTilt = 0.14;
@@ -244,26 +244,26 @@ function ChibiArm({
   elbow: Ref<THREE.Group>;
   wrist: Ref<THREE.Group>;
 }) {
-  const x = side === "left" ? -0.22 : 0.22;
-  const thumbX = side === "left" ? 0.045 : -0.045;
+  const x = side === "left" ? -0.2 : 0.2;
+  const thumbX = side === "left" ? 0.038 : -0.038;
   return (
-    <group ref={arm} position={[x, 0.08, 0.16]}>
-      <mesh position={[0, -0.1, 0.03]}>
-        <capsuleGeometry args={[0.058, 0.11, 6, 12]} />
+    <group ref={arm} position={[x, 0.1, 0.02]}>
+      <mesh position={[0, -0.1, 0]}>
+        <capsuleGeometry args={[0.05, 0.1, 6, 12]} />
         <meshStandardMaterial color={outfit} roughness={0.45} />
       </mesh>
-      <group ref={elbow} position={[0, -0.18, 0.05]}>
-        <mesh position={[0, -0.075, 0.03]}>
-          <capsuleGeometry args={[0.052, 0.09, 6, 12]} />
+      <group ref={elbow} position={[0, -0.17, 0]}>
+        <mesh position={[0, -0.07, 0]}>
+          <capsuleGeometry args={[0.045, 0.08, 6, 12]} />
           <meshStandardMaterial color={skin} roughness={0.55} />
         </mesh>
-        <group ref={wrist} position={[0, -0.155, 0.06]}>
-          <mesh scale={[1.2, 0.82, 1.28]}>
-            <sphereGeometry args={[0.07, 14, 14]} />
+        <group ref={wrist} position={[0, -0.14, 0.01]}>
+          <mesh scale={[1.08, 0.78, 1.12]}>
+            <sphereGeometry args={[0.055, 14, 14]} />
             <meshStandardMaterial color={skin} roughness={0.5} />
           </mesh>
-          <mesh position={[thumbX, 0.015, 0.04]}>
-            <sphereGeometry args={[0.03, 10, 10]} />
+          <mesh position={[thumbX, 0.01, 0.028]}>
+            <sphereGeometry args={[0.024, 10, 10]} />
             <meshStandardMaterial color={skin} roughness={0.5} />
           </mesh>
         </group>
