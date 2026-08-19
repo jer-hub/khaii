@@ -56,9 +56,9 @@ const REST: Pose = {
   headTilt: 0,
   headTurn: 0,
   faceY: 0,
-  // ~37° down-and-out, matching the drawn chibi.
-  armL: { out: 0.65, raise: 0, elbow: 0 },
-  armR: { out: -0.65, raise: 0, elbow: 0 },
+  // Left negative / right positive = out from the body (not into the torso).
+  armL: { out: -0.7, raise: 0, elbow: 0 },
+  armR: { out: 0.7, raise: 0, elbow: 0 },
   wristL: { flick: 0, twist: 0 },
   wristR: { flick: 0, twist: 0 },
   legL: { lift: 0, knee: 0 },
@@ -95,8 +95,8 @@ function poseFor(
     pose.hipsY = -0.04;
     pose.legL.knee = 0.45;
     pose.legR.knee = 0.45;
-    pose.armL = { out: 0.45, raise: 0.08, elbow: 0.3 };
-    pose.armR = { out: -0.45, raise: 0.08, elbow: 0.3 };
+    pose.armL = { out: -0.55, raise: 0.05, elbow: 0 };
+    pose.armR = { out: 0.55, raise: 0.05, elbow: 0 };
     pose.wristL = { flick: 0.35, twist: 0.2 };
     pose.wristR = { flick: 0.35, twist: -0.2 };
     pose.headTilt = 0.12;
@@ -138,12 +138,12 @@ function poseFor(
     pose.headTurn = left * 0.07;
     pose.headTilt = -down * 0.04;
     pose.armL = {
-      out: 0.65 + right * 0.12,
+      out: -0.7 + right * 0.14,
       raise: right * 0.14,
       elbow: 0,
     };
     pose.armR = {
-      out: -0.65 + left * 0.12,
+      out: 0.7 + left * 0.14,
       raise: left * 0.14,
       elbow: 0,
     };
@@ -166,7 +166,7 @@ function poseFor(
   } else if (action === "wave") {
     const flap = Math.sin(elapsed * 16.5);
     const snap = Math.sign(flap) * Math.pow(Math.abs(flap), 0.65);
-    pose.armR = { out: -1.35, raise: 0.05 + snap * 0.5, elbow: 0.45 + Math.abs(snap) * 0.3 };
+    pose.armR = { out: 2.05 + snap * 0.22, raise: 0.08, elbow: 0 };
     pose.wristR = { flick: Math.sin(elapsed * 16.5 + 0.5) * 0.95, twist: 0.55 + snap * 0.45 };
     pose.armL = { ...REST.armL };
     pose.wristL = { flick: 0.12, twist: 0.18 };
@@ -179,8 +179,8 @@ function poseFor(
     pose.spineBend = 0.18;
     pose.headTilt = 0.18;
     pose.headTurn = 0.35 * inward;
-    pose.armL = { out: 1.05, raise: 0.15, elbow: 1.05 };
-    pose.armR = { out: -1.05, raise: 0.15, elbow: 1.05 };
+    pose.armL = { out: 0.15, raise: 0.35, elbow: 0.2 };
+    pose.armR = { out: -0.15, raise: 0.35, elbow: 0.2 };
     pose.wristL = { flick: 0.45, twist: 0.7 * inward };
     pose.wristR = { flick: 0.45, twist: 0.7 * inward };
     pose.hipsY = -0.02;
@@ -194,8 +194,8 @@ function poseFor(
     pose.hipsTilt = snap * 0.32;
     pose.chestTwist = Math.sin(elapsed * 5.2) * 0.42;
     pose.headTurn = -snap * 0.24;
-    pose.armL = { out: 1.05 + snap * 0.35, raise: 0.15 + bounce * 0.75, elbow: 0.7 + bounce * 0.35 };
-    pose.armR = { out: -1.05 - snap * 0.35, raise: 0.15 + bounce * 0.75, elbow: 0.7 + bounce * 0.35 };
+    pose.armL = { out: -1.15 + snap * 0.25, raise: 0.1 + bounce * 0.45, elbow: 0 };
+    pose.armR = { out: 1.15 - snap * 0.25, raise: 0.1 + bounce * 0.45, elbow: 0 };
     pose.wristL = { flick: snap * 0.7, twist: bounce * 0.9 };
     pose.wristR = { flick: -snap * 0.7, twist: -bounce * 0.9 };
     pose.legL = { lift: 0.1 + Math.max(0, beat) * 0.5, knee: 0.32 + bounce * 0.45 };
@@ -206,8 +206,8 @@ function poseFor(
     pose.headTilt = -0.22 * inward;
     pose.headTurn = 0.28 * inward;
     pose.hop = Math.sin(elapsed * 5) * 0.012;
-    pose.armL = { out: 0.9, raise: 0.2, elbow: 0.95 };
-    pose.armR = { out: -0.9, raise: 0.2, elbow: 0.95 };
+    pose.armL = { out: 0.1, raise: 0.3, elbow: 0.15 };
+    pose.armR = { out: -0.1, raise: 0.3, elbow: 0.15 };
     pose.wristL = { flick: 0.25, twist: 0.35 * inward };
     pose.wristR = { flick: 0.25, twist: 0.35 * inward };
     pose.legL.lift = side === "left" ? 0.22 : 0.08;
@@ -218,8 +218,8 @@ function poseFor(
       pose.hipsY = -0.1 * crouch;
       pose.legL.knee = 0.9 * crouch;
       pose.legR.knee = 0.9 * crouch;
-      pose.armL = { out: 0.85, raise: 0.45, elbow: 0.85 };
-      pose.armR = { out: -0.85, raise: 0.45, elbow: 0.85 };
+      pose.armL = { out: -0.85, raise: 0.2, elbow: 0 };
+      pose.armR = { out: 0.85, raise: 0.2, elbow: 0 };
       pose.wristL = { flick: 0.2, twist: 0.15 };
       pose.wristR = { flick: 0.2, twist: -0.15 };
       pose.spineBend = 0.2;
@@ -231,14 +231,14 @@ function poseFor(
         pose.hipsY = -0.06 * (1 - land);
         pose.legL.knee = 0.55 * (1 - land) + 0.12 * land;
         pose.legR.knee = 0.55 * (1 - land) + 0.12 * land;
-        pose.armL = { out: 0.78, raise: 0.35, elbow: 0.8 };
-        pose.armR = { out: -0.78, raise: 0.35, elbow: 0.8 };
+        pose.armL = { out: -0.7, raise: 0.1, elbow: 0 };
+        pose.armR = { out: 0.7, raise: 0.1, elbow: 0 };
       } else {
         pose.hop = air * 0.5;
         pose.legL = { lift: -0.15, knee: 0.55 };
         pose.legR = { lift: -0.15, knee: 0.55 };
-        pose.armL = { out: 0.95, raise: 0.85, elbow: 0.25 };
-        pose.armR = { out: -0.95, raise: 0.85, elbow: 0.25 };
+        pose.armL = { out: -2.05, raise: 0.15, elbow: 0 };
+        pose.armR = { out: 2.05, raise: 0.15, elbow: 0 };
         pose.wristL = { flick: -0.4, twist: 0.2 };
         pose.wristR = { flick: -0.4, twist: -0.2 };
         pose.headTilt = -0.08;
@@ -264,9 +264,9 @@ function ChibiArm({
   elbow: Ref<THREE.Group>;
   wrist: Ref<THREE.Group>;
 }) {
-  const x = side === "left" ? -0.12 : 0.12;
+  const x = side === "left" ? -0.16 : 0.16;
   return (
-    <group ref={arm} position={[x, 0.17, 0]}>
+    <group ref={arm} position={[x, 0.16, 0.04]}>
       <mesh position={[0, -0.14, 0]}>
         <capsuleGeometry args={[0.042, 0.2, 6, 12]} />
         <meshStandardMaterial color={outfit} roughness={0.48} />
