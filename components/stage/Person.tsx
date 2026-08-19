@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type Ref } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -56,10 +56,10 @@ const REST: Pose = {
   headTilt: 0,
   headTurn: 0,
   faceY: 0,
-  armL: { out: 0.28, raise: 0.08, elbow: 0.35 },
-  armR: { out: -0.28, raise: 0.08, elbow: 0.35 },
-  wristL: { flick: 0.1, twist: 0.16 },
-  wristR: { flick: 0.1, twist: -0.16 },
+  armL: { out: 0.82, raise: 0.38, elbow: 0.92 },
+  armR: { out: -0.82, raise: 0.38, elbow: 0.92 },
+  wristL: { flick: 0.18, twist: 0.22 },
+  wristR: { flick: 0.18, twist: -0.22 },
   legL: { lift: 0.06, knee: 0.12 },
   legR: { lift: 0.06, knee: 0.12 },
 };
@@ -118,14 +118,14 @@ function poseFor(
     pose.headTurn = left * 0.07;
     pose.headTilt = -down * 0.04;
     pose.armL = {
-      out: 0.18 + Math.abs(right) * 0.14,
-      raise: 0.04 + right * 0.72,
-      elbow: 0.28 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.7,
+      out: 0.72 + Math.abs(right) * 0.18,
+      raise: 0.32 + right * 0.7,
+      elbow: 0.7 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.45,
     };
     pose.armR = {
-      out: -0.18 - Math.abs(left) * 0.14,
-      raise: 0.04 + left * 0.72,
-      elbow: 0.28 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.7,
+      out: -0.72 - Math.abs(left) * 0.18,
+      raise: 0.32 + left * 0.7,
+      elbow: 0.7 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.45,
     };
     pose.wristL = {
       flick: Math.sin(cadence + Math.PI + wristLag) * 0.55,
@@ -146,9 +146,9 @@ function poseFor(
   } else if (action === "wave") {
     const flap = Math.sin(elapsed * 16.5);
     const snap = Math.sign(flap) * Math.pow(Math.abs(flap), 0.65);
-    pose.armR = { out: -1.32, raise: -0.22 + snap * 0.55, elbow: 0.55 + Math.abs(snap) * 0.45 };
+    pose.armR = { out: -1.45, raise: 0.15 + snap * 0.55, elbow: 0.7 + Math.abs(snap) * 0.35 };
     pose.wristR = { flick: Math.sin(elapsed * 16.5 + 0.5) * 0.95, twist: 0.55 + snap * 0.45 };
-    pose.armL = { out: 0.22, raise: 0.28, elbow: 0.38 };
+    pose.armL = { out: 0.72, raise: 0.35, elbow: 0.85 };
     pose.wristL = { flick: 0.12, twist: 0.18 };
     pose.hipsTilt = -0.14 * inward;
     pose.headTilt = 0.14;
@@ -159,8 +159,8 @@ function poseFor(
     pose.spineBend = 0.18;
     pose.headTilt = 0.18;
     pose.headTurn = 0.35 * inward;
-    pose.armL = { out: 0.92, raise: -0.62, elbow: 1.22 };
-    pose.armR = { out: -0.92, raise: -0.62, elbow: 1.22 };
+    pose.armL = { out: 1.05, raise: 0.15, elbow: 1.05 };
+    pose.armR = { out: -1.05, raise: 0.15, elbow: 1.05 };
     pose.wristL = { flick: 0.45, twist: 0.7 * inward };
     pose.wristR = { flick: 0.45, twist: 0.7 * inward };
     pose.hipsY = -0.02;
@@ -174,8 +174,8 @@ function poseFor(
     pose.hipsTilt = snap * 0.32;
     pose.chestTwist = Math.sin(elapsed * 5.2) * 0.42;
     pose.headTurn = -snap * 0.24;
-    pose.armL = { out: 0.85 + snap * 0.5, raise: -0.55 + bounce * 0.7, elbow: 0.55 + bounce * 0.5 };
-    pose.armR = { out: -0.85 - snap * 0.5, raise: -0.55 + bounce * 0.7, elbow: 0.55 + bounce * 0.5 };
+    pose.armL = { out: 1.05 + snap * 0.35, raise: 0.15 + bounce * 0.75, elbow: 0.7 + bounce * 0.35 };
+    pose.armR = { out: -1.05 - snap * 0.35, raise: 0.15 + bounce * 0.75, elbow: 0.7 + bounce * 0.35 };
     pose.wristL = { flick: snap * 0.7, twist: bounce * 0.9 };
     pose.wristR = { flick: -snap * 0.7, twist: -bounce * 0.9 };
     pose.legL = { lift: 0.1 + Math.max(0, beat) * 0.5, knee: 0.32 + bounce * 0.45 };
@@ -186,8 +186,8 @@ function poseFor(
     pose.headTilt = -0.22 * inward;
     pose.headTurn = 0.28 * inward;
     pose.hop = Math.sin(elapsed * 5) * 0.012;
-    pose.armL = { out: 0.55, raise: -0.25, elbow: 0.8 };
-    pose.armR = { out: -0.55, raise: -0.25, elbow: 0.8 };
+    pose.armL = { out: 0.9, raise: 0.2, elbow: 0.95 };
+    pose.armR = { out: -0.9, raise: 0.2, elbow: 0.95 };
     pose.wristL = { flick: 0.25, twist: 0.35 * inward };
     pose.wristR = { flick: 0.25, twist: 0.35 * inward };
     pose.legL.lift = side === "left" ? 0.22 : 0.08;
@@ -198,8 +198,8 @@ function poseFor(
       pose.hipsY = -0.1 * crouch;
       pose.legL.knee = 0.9 * crouch;
       pose.legR.knee = 0.9 * crouch;
-      pose.armL = { out: 0.45, raise: 0.5, elbow: 0.7 };
-      pose.armR = { out: -0.45, raise: 0.5, elbow: 0.7 };
+      pose.armL = { out: 0.85, raise: 0.45, elbow: 0.85 };
+      pose.armR = { out: -0.85, raise: 0.45, elbow: 0.85 };
       pose.wristL = { flick: 0.2, twist: 0.15 };
       pose.wristR = { flick: 0.2, twist: -0.15 };
       pose.spineBend = 0.2;
@@ -211,14 +211,14 @@ function poseFor(
         pose.hipsY = -0.06 * (1 - land);
         pose.legL.knee = 0.55 * (1 - land) + 0.12 * land;
         pose.legR.knee = 0.55 * (1 - land) + 0.12 * land;
-        pose.armL = { out: 0.2, raise: 0.25, elbow: 0.3 };
-        pose.armR = { out: -0.2, raise: 0.25, elbow: 0.3 };
+        pose.armL = { out: 0.78, raise: 0.35, elbow: 0.8 };
+        pose.armR = { out: -0.78, raise: 0.35, elbow: 0.8 };
       } else {
         pose.hop = air * 0.5;
         pose.legL = { lift: -0.15, knee: 0.55 };
         pose.legR = { lift: -0.15, knee: 0.55 };
-        pose.armL = { out: 0.55, raise: -1.15, elbow: 0.15 };
-        pose.armR = { out: -0.55, raise: -1.15, elbow: 0.15 };
+        pose.armL = { out: 0.95, raise: 0.85, elbow: 0.25 };
+        pose.armR = { out: -0.95, raise: 0.85, elbow: 0.25 };
         pose.wristL = { flick: -0.4, twist: 0.2 };
         pose.wristR = { flick: -0.4, twist: -0.2 };
         pose.headTilt = -0.08;
@@ -227,6 +227,49 @@ function poseFor(
   }
 
   return pose;
+}
+
+function ChibiArm({
+  side,
+  outfit,
+  skin,
+  arm,
+  elbow,
+  wrist,
+}: {
+  side: "left" | "right";
+  outfit: string;
+  skin: string;
+  arm: Ref<THREE.Group>;
+  elbow: Ref<THREE.Group>;
+  wrist: Ref<THREE.Group>;
+}) {
+  const x = side === "left" ? -0.22 : 0.22;
+  const thumbX = side === "left" ? 0.045 : -0.045;
+  return (
+    <group ref={arm} position={[x, 0.08, 0.16]}>
+      <mesh position={[0, -0.1, 0.03]}>
+        <capsuleGeometry args={[0.058, 0.11, 6, 12]} />
+        <meshStandardMaterial color={outfit} roughness={0.45} />
+      </mesh>
+      <group ref={elbow} position={[0, -0.18, 0.05]}>
+        <mesh position={[0, -0.075, 0.03]}>
+          <capsuleGeometry args={[0.052, 0.09, 6, 12]} />
+          <meshStandardMaterial color={skin} roughness={0.55} />
+        </mesh>
+        <group ref={wrist} position={[0, -0.155, 0.06]}>
+          <mesh scale={[1.2, 0.82, 1.28]}>
+            <sphereGeometry args={[0.07, 14, 14]} />
+            <meshStandardMaterial color={skin} roughness={0.5} />
+          </mesh>
+          <mesh position={[thumbX, 0.015, 0.04]}>
+            <sphereGeometry args={[0.03, 10, 10]} />
+            <meshStandardMaterial color={skin} roughness={0.5} />
+          </mesh>
+        </group>
+      </group>
+    </group>
+  );
 }
 
 function spring(current: number, target: number, delta: number, stiffness: number) {
@@ -422,45 +465,10 @@ export function Person({
                 <meshBasicMaterial color={accent} toneMapped={false} />
               </mesh>
             </group>
-
-            <group ref={armL} position={[-0.155, 0.04, 0]}>
-              <mesh position={[0, -0.07, 0]}>
-                <capsuleGeometry args={[0.05, 0.07, 5, 10]} />
-                <meshStandardMaterial color={outfit} />
-              </mesh>
-              <group ref={elbowL} position={[0, -0.12, 0]}>
-                <mesh position={[0, -0.05, 0]}>
-                  <capsuleGeometry args={[0.045, 0.055, 5, 10]} />
-                  <meshStandardMaterial color={skin} roughness={0.55} />
-                </mesh>
-                <group ref={wristL} position={[0, -0.1, 0]}>
-                  <mesh>
-                    <sphereGeometry args={[0.052, 12, 12]} />
-                    <meshStandardMaterial color={skin} roughness={0.55} />
-                  </mesh>
-                </group>
-              </group>
-            </group>
-
-            <group ref={armR} position={[0.155, 0.04, 0]}>
-              <mesh position={[0, -0.07, 0]}>
-                <capsuleGeometry args={[0.05, 0.07, 5, 10]} />
-                <meshStandardMaterial color={outfit} />
-              </mesh>
-              <group ref={elbowR} position={[0, -0.12, 0]}>
-                <mesh position={[0, -0.05, 0]}>
-                  <capsuleGeometry args={[0.045, 0.055, 5, 10]} />
-                  <meshStandardMaterial color={skin} roughness={0.55} />
-                </mesh>
-                <group ref={wristR} position={[0, -0.1, 0]}>
-                  <mesh>
-                    <sphereGeometry args={[0.052, 12, 12]} />
-                    <meshStandardMaterial color={skin} roughness={0.55} />
-                  </mesh>
-                </group>
-              </group>
-            </group>
           </group>
+
+          <ChibiArm side="left" outfit={outfit} skin={skin} arm={armL} elbow={elbowL} wrist={wristL} />
+          <ChibiArm side="right" outfit={outfit} skin={skin} arm={armR} elbow={elbowR} wrist={wristR} />
         </group>
       </group>
     </group>
