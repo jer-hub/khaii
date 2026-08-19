@@ -260,12 +260,7 @@ export function Person({
   const shirtMat = useMemo(() => ({ color: outfit, roughness: 0.42, metalness: 0.02 }), [outfit]);
 
   return (
-    <group
-      ref={root}
-      position={[home[0], 0, home[1]]
-      onPointerDown={onPointerDown}
-      raycast={onPointerDown ? undefined : () => null}
-    >
+    <group ref={root} position={[home[0], 0, home[1]]} onPointerDown={onPointerDown}>
       {onPointerDown ? (
         <mesh visible={false} position={[0, 0.72, 0]}>
           <capsuleGeometry args={[0.28, 0.95, 4, 8]} />

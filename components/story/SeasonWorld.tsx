@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { CHARACTERS, STORY_LOOP_SECONDS } from "@/data/content";
@@ -26,7 +26,6 @@ function seasonOpacity(index: number, next: number, blend: number, season: numbe
 }
 
 function Scene({ onTime }: { onTime: (t: number) => void }) {
-  const { scene, camera } = useThree();
   const { photos } = useAvatars();
   const world = useRef<THREE.Group>(null);
   const youGroup = useRef<THREE.Group>(null);
@@ -37,6 +36,8 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
   const snow = useRef<THREE.MeshBasicMaterial>(null);
   const spark = useRef<THREE.MeshBasicMaterial>(null);
   const sun = useRef<THREE.DirectionalLight>(null);
+  const fog = useRef<THREE.Fog>(null);
+  const sky = useRef<THREE.Color>(null);
   const fogColor = useMemo(() => new THREE.Color("#f7e9ee"), []);
   const skyColor = useMemo(() => new THREE.Color("#f3dce6"), []);
   const groundColor = useMemo(() => new THREE.Color("#8fbe8a"), []);
@@ -44,19 +45,18 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
   const [action, setAction] = useState<PersonAction>("walk");
   const actionRef = useRef<PersonAction>("walk");
 
-  if (!scene.fog) scene.fog = new THREE.Fog("#f7e9ee", 6, 16);
-
-  useFrame(({ clock }) => {
-    const t = wrapStoryTime(clock.elapsedTime);
+  useFrame((state) => {
+    const t = wrapStoryTime(state.clock.elapsedTime);
     const mix = seasonBlend(t);
     skyColor.set(mix.current.sky).lerp(scratch.set(mix.upcoming.sky), mix.blend);
     groundColor.set(mix.current.ground).lerp(scratch.set(mix.upcoming.ground), mix.blend);
     fogColor.set(mix.current.fog).lerp(scratch.set(mix.upcoming.fog), mix.blend);
-    scene.background = skyColor;
-    const fog = scene.fog as THREE.Fog;
-    fog.color.copy(fogColor);
-    fog.near = 5.5 - mix.blend * 1.2;
-    fog.far = 15 - mix.blend * 2;
+    if (sky.current) sky.current.copy(skyColor);
+    if (fog.current) {
+      fog.current.color.copy(fogColor);
+      fog.current.near = 5.5 - mix.blend * 1.2;
+      fog.current.far = 15 - mix.blend * 2;
+    }
     if (ground.current) ground.current.color.copy(groundColor);
     if (sun.current) {
       sun.current.color.set(mix.current.light).lerp(scratch.set(mix.upcoming.light), mix.blend);
@@ -64,12 +64,12 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
     if (world.current) world.current.position.z = (t / STORY_LOOP_SECONDS) * WORLD_LENGTH;
 
     const pulse = mix.blend * 0.5;
-    camera.position.set(
+    state.camera.position.set(
       Math.sin(t * 0.22) * 0.55,
       1.42 + Math.sin(t * 0.18) * 0.08 + pulse * 0.14,
       3.55 - pulse * 0.6 - mix.loopFade * 0.85,
     );
-    camera.lookAt(0, 0.72, 0);
+    state.camera.lookAt(0, 0.72, 0);
 
     const nextAction = actionForTime(t);
     if (nextAction !== actionRef.current) {
@@ -95,7 +95,8 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
 
   return (
     <>
-      <color attach="background" args={["#f3dce6"]} />
+      <color ref={sky} attach="background" args={["#f3dce6"]} />
+      <fog ref={fog} attach="fog" args={["#f7e9ee", 6, 16]} />
       <hemisphereLight args={["#fff6ea", "#8aa08a", 0.9]} />
       <ambientLight intensity={0.55} />
       <directionalLight ref={sun} position={[3, 5, 2]} intensity={1.15} color="#fff1dc" />
