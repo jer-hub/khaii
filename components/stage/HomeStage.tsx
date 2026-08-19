@@ -7,6 +7,7 @@ import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 import { CHARACTERS, STAGE_ACTIONS, type CharacterId, type StageAction } from "@/data/content";
 import { readImageFile, useAvatars } from "@/hooks/useAvatars";
 import { DragLayer, type DragOrigin } from "@/components/stage/DragLayer";
+import { separateFromOther } from "@/components/stage/collision";
 import { FloatingHearts } from "@/components/stage/FloatingHearts";
 import { Person } from "@/components/stage/Person";
 
@@ -54,6 +55,8 @@ export function HomeStage() {
   const fileYou = useRef<HTMLInputElement>(null);
   const filePartner = useRef<HTMLInputElement>(null);
   const originRef = useRef<DragOrigin>({ x: 0, y: 0, dragged: false });
+  const youBody = useRef({ x: HOMES.you[0], z: HOMES.you[1] });
+  const partnerBody = useRef({ x: HOMES.partner[0], z: HOMES.partner[1] });
 
   function play(next: StageAction) {
     window.clearTimeout(timer.current);
@@ -69,8 +72,11 @@ export function HomeStage() {
   }
 
   const movePerson = useCallback((id: CharacterId, x: number, z: number) => {
-    if (id === "you") setYou({ x, z });
-    else setPartner({ x, z });
+    if (id === "you") {
+      setYou(separateFromOther(x, z, partnerBody.current.x, partnerBody.current.z, youBody.current));
+    } else {
+      setPartner(separateFromOther(x, z, youBody.current.x, youBody.current.z, partnerBody.current));
+    }
   }, []);
 
   const releasePerson = useCallback(() => setGrab(null), []);
@@ -143,6 +149,8 @@ export function HomeStage() {
               side="left"
               action={action}
               grabbed={grab === "you"}
+              solidRef={youBody}
+              otherRef={partnerBody}
               onPointerDown={(event) => {
                 originRef.current = {
                   x: event.nativeEvent.clientX,
@@ -163,6 +171,8 @@ export function HomeStage() {
               side="right"
               action={action}
               grabbed={grab === "partner"}
+              solidRef={partnerBody}
+              otherRef={youBody}
               onPointerDown={(event) => {
                 originRef.current = {
                   x: event.nativeEvent.clientX,

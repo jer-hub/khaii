@@ -1,3 +1,4 @@
+import { PERSON_CONTACT_X, PERSON_MIN_DISTANCE, keepPairApart } from "@/components/stage/collision";
 import { SEASON_SECONDS, SEASON_STORY, STORY_LOOP_SECONDS } from "@/data/content";
 
 export function wrapStoryTime(elapsed: number) {
@@ -34,12 +35,14 @@ export function actionForTime(t: number): "walk" | "wave" | "dance" | "hug" | "i
 
 export function coupleOffset(t: number, side: "left" | "right") {
   const hugging = t >= 22.5 && t < 29.4;
-  const baseX = side === "left" ? -0.28 : 0.28;
-  const hugX = side === "left" ? -0.11 : 0.11;
-  const sway = Math.sin(t * 0.42) * (hugging ? 0.01 : 0.14);
+  const base = hugging ? PERSON_CONTACT_X : 0.32;
+  const sway = Math.sin(t * 0.42) * (hugging ? 0.006 : 0.05);
   const stagger = side === "left" ? 0 : 0.4;
+  const leftX = -base + sway;
+  const rightX = base + sway;
+  const [solidLeft, solidRight] = keepPairApart(leftX, rightX, PERSON_MIN_DISTANCE);
   return {
-    x: (hugging ? hugX : baseX) + sway,
-    z: hugging ? 0.12 : 0.1 + Math.sin(t * 0.31 + stagger) * 0.1,
+    x: side === "left" ? solidLeft : solidRight,
+    z: hugging ? 0.12 : 0.1 + Math.sin(t * 0.31 + stagger) * 0.08,
   };
 }

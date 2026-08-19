@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useRef, type Ref } from "react";
+import { useMemo, useRef, type MutableRefObject, type Ref } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import type { StageAction } from "@/data/content";
+import { PERSON_CONTACT_X, PERSON_RADIUS, separateFromOther } from "@/components/stage/collision";
 
 export type PersonAction = StageAction | "idle" | "walk";
 
@@ -21,6 +22,8 @@ type PersonProps = {
   grabbed?: boolean;
   scripted?: boolean;
   facingY?: number;
+  solidRef?: MutableRefObject<{ x: number; z: number }>;
+  otherRef?: MutableRefObject<{ x: number; z: number }>;
   onPointerDown?: (event: { nativeEvent: PointerEvent }) => void;
 };
 
@@ -186,11 +189,11 @@ function poseFor(
     pose.hipsTilt = rock * 0.09;
     pose.hop = 0.05 + rock * 0.022;
     if (side === "left") {
-      pose.armL = { out: -0.7 + 1.12 * squeeze, raise: 0.9 * squeeze, elbow: 0.55 * squeeze };
-      pose.armR = { out: 0.7 - 1.28 * squeeze, raise: 1.25 * squeeze, elbow: 0.8 * squeeze };
+      pose.armL = { out: -0.7 + 0.28 * squeeze, raise: 0.75 * squeeze, elbow: 0.35 * squeeze };
+      pose.armR = { out: 0.7 - 0.4 * squeeze, raise: 1.05 * squeeze, elbow: 0.55 * squeeze };
     } else {
-      pose.armL = { out: -0.7 + 1.28 * squeeze, raise: 1.25 * squeeze, elbow: 0.8 * squeeze };
-      pose.armR = { out: 0.7 - 1.12 * squeeze, raise: 0.9 * squeeze, elbow: 0.55 * squeeze };
+      pose.armL = { out: -0.7 + 0.4 * squeeze, raise: 1.05 * squeeze, elbow: 0.55 * squeeze };
+      pose.armR = { out: 0.7 - 0.28 * squeeze, raise: 0.75 * squeeze, elbow: 0.35 * squeeze };
     }
     pose.wristL = { flick: 0.2, twist: 0.7 * inward };
     pose.wristR = { flick: 0.2, twist: 0.7 * inward };
@@ -216,8 +219,8 @@ function poseFor(
     pose.headTilt = -0.22 * inward;
     pose.headTurn = 0.28 * inward;
     pose.hop = Math.sin(elapsed * 5) * 0.012;
-    pose.armL = { out: 0.1, raise: 0.3, elbow: 0.15 };
-    pose.armR = { out: -0.1, raise: 0.3, elbow: 0.15 };
+    pose.armL = { out: -0.55, raise: 0.28, elbow: 0.12 };
+    pose.armR = { out: 0.55, raise: 0.28, elbow: 0.12 };
     pose.wristL = { flick: 0.25, twist: 0.35 * inward };
     pose.wristR = { flick: 0.25, twist: 0.35 * inward };
     pose.legL.lift = side === "left" ? 0.22 : 0.08;
@@ -310,6 +313,8 @@ export function Person({
   grabbed = false,
   scripted = false,
   facingY,
+  solidRef,
+  otherRef,
   onPointerDown,
 }: PersonProps) {
   const root = useRef<THREE.Group>(null);
@@ -332,7 +337,7 @@ export function Person({
   const texture = useTexture(photo);
   const skin = "#f0c7b1";
 
-  const hugX = side === "left" ? -0.12 : 0.12;
+  const hugX = side === "left" ? -PERSON_CONTACT_X : PERSON_CONTACT_X;
 
   useFrame(({ clock }, delta) => {
     const nodes = [root, hips, spine, chest, head, armL, armR, elbowL, elbowR, wristL, wristR, legL, legR, kneeL, kneeR];
@@ -360,6 +365,23 @@ export function Person({
     const hug = action === "hug";
     rootNode.position.x = spring(rootNode.position.x, targetX, dt, (closing ? 36 : 18) * snap);
     rootNode.position.z = spring(rootNode.position.z, targetZ, dt, (closing ? 36 : 18) * snap);
+
+    if (otherRef) {
+      const blocked = separateFromOther(
+        rootNode.position.x,
+        rootNode.position.z,
+        otherRef.current.x,
+        otherRef.current.z,
+        { x: rootNode.position.x, z: rootNode.position.z },
+      );
+      rootNode.position.x = blocked.x;
+      rootNode.position.z = blocked.z;
+    }
+    if (solidRef) {
+      solidRef.current.x = rootNode.position.x;
+      solidRef.current.z = rootNode.position.z;
+    }
+
     rootNode.position.y = spring(rootNode.position.y, pose.hop, dt, 26 * snap);
     const yaw = facingY ?? pose.faceY;
     rootNode.rotation.y = spring(rootNode.rotation.y, yaw, dt, (hug ? 22 : 16) * snap);
@@ -395,7 +417,7 @@ export function Person({
     <group ref={root} position={[home[0], 0, home[1]]} onPointerDown={onPointerDown}>
       {onPointerDown ? (
         <mesh visible={false} position={[0, 0.4, 0]}>
-          <capsuleGeometry args={[0.24, 0.5, 4, 8]} />
+          <capsuleGeometry args={[PERSON_RADIUS, 0.48, 4, 8]} />
         </mesh>
       ) : null}
 
