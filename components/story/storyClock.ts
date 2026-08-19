@@ -10,8 +10,7 @@ export function seasonBlend(t: number) {
   const fade = 1.1;
   const next = (index + 1) % 4;
   const blend = local > SEASON_SECONDS - fade ? (local - (SEASON_SECONDS - fade)) / fade : 0;
-  const loopFade =
-    t > STORY_LOOP_SECONDS - 0.45 ? (t - (STORY_LOOP_SECONDS - 0.45)) / 0.45 : t < 0.4 ? 1 - t / 0.4 : 0;
+  const loopFade = t > STORY_LOOP_SECONDS - 0.45 ? (t - (STORY_LOOP_SECONDS - 0.45)) / 0.45 : 0;
   return {
     index,
     next,

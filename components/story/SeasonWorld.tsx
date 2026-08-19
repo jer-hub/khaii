@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
@@ -25,7 +25,7 @@ function seasonOpacity(index: number, next: number, blend: number, season: numbe
   return off;
 }
 
-function Scene({ onTime }: { onTime: (t: number) => void }) {
+function Scene() {
   const { photos } = useAvatars();
   const world = useRef<THREE.Group>(null);
   const youGroup = useRef<THREE.Group>(null);
@@ -41,7 +41,6 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
   const fogColor = useMemo(() => new THREE.Color("#f7e9ee"), []);
   const skyColor = useMemo(() => new THREE.Color("#f3dce6"), []);
   const groundColor = useMemo(() => new THREE.Color("#8fbe8a"), []);
-  const lastUi = useRef(0);
   const [action, setAction] = useState<PersonAction>("walk");
   const actionRef = useRef<PersonAction>("walk");
 
@@ -86,11 +85,6 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
     if (spark.current) spark.current.opacity = seasonOpacity(mix.index, mix.next, mix.blend, 1, 0.75, 0.04);
     if (leaf.current) leaf.current.opacity = seasonOpacity(mix.index, mix.next, mix.blend, 2, 0.9, 0.04);
     if (snow.current) snow.current.opacity = seasonOpacity(mix.index, mix.next, mix.blend, 3, 0.95, 0.04);
-
-    if (t - lastUi.current > 0.08 || t < lastUi.current) {
-      lastUi.current = t;
-      onTime(t);
-    }
   });
 
   return (
@@ -153,16 +147,20 @@ function Scene({ onTime }: { onTime: (t: number) => void }) {
   );
 }
 
-export function SeasonWorld({ onTime }: { onTime: (t: number) => void }) {
+export function SeasonWorld() {
   return (
-    <div className="pointer-events-none absolute inset-0">
+    <div className="h-full w-full">
       <Canvas
         dpr={[1, 1.5]}
         camera={{ position: [0, 1.42, 3.55], fov: 38, near: 0.1, far: 24 }}
         gl={{ antialias: true }}
         className="h-full w-full"
+        style={{ display: "block", width: "100%", height: "100%" }}
+        resize={{ debounce: 0 }}
       >
-        <Scene onTime={onTime} />
+        <Suspense fallback={null}>
+          <Scene />
+        </Suspense>
       </Canvas>
     </div>
   );

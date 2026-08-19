@@ -1,28 +1,43 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { SEASON_SECONDS, SEASON_STORY } from "@/data/content";
-import { seasonBlend } from "@/components/story/storyClock";
+import { seasonBlend, wrapStoryTime } from "@/components/story/storyClock";
 
 const SeasonWorld = dynamic(
   () => import("@/components/story/SeasonWorld").then((mod) => mod.SeasonWorld),
   {
     ssr: false,
-    loading: () => <div className="absolute inset-0 h-full w-full animate-pulse bg-[#f3dce6]" />,
+    loading: () => <div className="h-full w-full animate-pulse bg-[#f3dce6]" />,
   },
 );
 
 export function StoryViewer({ onBack }: { onBack: () => void }) {
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(0.01);
   const mix = useMemo(() => seasonBlend(time), [time]);
   const caption = mix.blend > 0.55 ? mix.upcoming : mix.current;
 
+  useEffect(() => {
+    const started = performance.now();
+    let frame = 0;
+    let last = 0;
+    const tick = (now: number) => {
+      if (now - last > 50) {
+        last = now;
+        setTime(wrapStoryTime((now - started) / 1000));
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <section className="relative flex h-full min-h-0 flex-col overflow-hidden bg-[#f3dce6]">
-      <SeasonWorld onTime={setTime} />
+    <section className="relative h-full w-full overflow-hidden bg-[#f3dce6]">
+      <SeasonWorld />
 
       <button
         type="button"
@@ -52,11 +67,11 @@ export function StoryViewer({ onBack }: { onBack: () => void }) {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-charcoal/55 to-transparent px-6 pb-8 pt-16">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-charcoal/70 to-transparent px-6 pb-8 pt-16">
         <motion.div
           key={caption.id}
           initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1 - mix.loopFade, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
         >
           <p className="text-[11px] tracking-[0.22em] text-rose uppercase">{caption.id}</p>
@@ -64,11 +79,6 @@ export function StoryViewer({ onBack }: { onBack: () => void }) {
           <p className="mt-2 max-w-sm text-sm leading-relaxed text-cream/85">{caption.line}</p>
         </motion.div>
       </div>
-
-      <div
-        className="pointer-events-none absolute inset-0 z-10 bg-[#f3dce6]"
-        style={{ opacity: mix.loopFade }}
-      />
     </section>
   );
 }
