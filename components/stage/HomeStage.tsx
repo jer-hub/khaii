@@ -22,7 +22,7 @@ const DURATIONS: Record<StageAction, number> = {
   wave: 2400,
   hug: 5200,
   dance: 4000,
-  kiss: 3000,
+  kiss: 3600,
   jump: 900,
 };
 
@@ -173,7 +173,8 @@ export function HomeStage() {
               }}
             />
 
-            <FloatingHearts active={action === "kiss" || action === "hug"} />
+            <FloatingHearts active={action === "hug"} kind="orb" />
+            <FloatingHearts active={action === "kiss"} kind="heart" />
             <ContactShadows position={[0, 0, 0]} opacity={0.32} scale={6.5} blur={2.2} far={2.8} />
           </Suspense>
         </Canvas>
