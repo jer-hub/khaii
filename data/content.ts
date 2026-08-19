@@ -28,6 +28,7 @@ export const CHARACTERS = {
     photo: "/avatars/you.png",
     outfit: "#8fa38f",
     accent: "#d7e0d4",
+    hair: "#3d322c",
   },
   partner: {
     id: "partner" as const,
@@ -35,6 +36,7 @@ export const CHARACTERS = {
     photo: "/avatars/partner.png",
     outfit: "#e39a9a",
     accent: "#f7d6d6",
+    hair: "#5c342f",
   },
 };
 

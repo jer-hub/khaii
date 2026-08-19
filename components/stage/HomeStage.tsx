@@ -3,9 +3,10 @@
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import { ArrowUp, Hand, Heart, HeartHandshake, Music } from "lucide-react";
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 import { CHARACTERS, STAGE_ACTIONS, type CharacterId, type StageAction } from "@/data/content";
 import { readImageFile, useAvatars } from "@/hooks/useAvatars";
+import { DragLayer, type DragOrigin } from "@/components/stage/DragLayer";
 import { FloatingHearts } from "@/components/stage/FloatingHearts";
 import { Person } from "@/components/stage/Person";
 
@@ -18,16 +19,16 @@ const ACTION_ICONS = {
 } as const;
 
 const DURATIONS: Record<StageAction, number> = {
-  wave: 2200,
-  hug: 3200,
-  dance: 3800,
-  kiss: 2800,
-  jump: 1600,
+  wave: 2400,
+  hug: 3400,
+  dance: 4000,
+  kiss: 3000,
+  jump: 900,
 };
 
 const HOMES: Record<CharacterId, [number, number]> = {
-  you: [-0.78, 0.12],
-  partner: [0.78, 0.12],
+  you: [-0.72, 0.14],
+  partner: [0.72, 0.14],
 };
 
 export function HomeStage() {
@@ -39,6 +40,7 @@ export function HomeStage() {
   const timer = useRef<number>(0);
   const fileYou = useRef<HTMLInputElement>(null);
   const filePartner = useRef<HTMLInputElement>(null);
+  const originRef = useRef<DragOrigin>({ x: 0, y: 0, dragged: false });
 
   function play(next: StageAction) {
     window.clearTimeout(timer.current);
@@ -53,9 +55,21 @@ export function HomeStage() {
     setPhoto(id, dataUrl);
   }
 
+  const movePerson = useCallback((id: CharacterId, x: number, z: number) => {
+    if (id === "you") setYou({ x, z });
+    else setPartner({ x, z });
+  }, []);
+
+  const releasePerson = useCallback(() => setGrab(null), []);
+
+  const tapPerson = useCallback((id: CharacterId) => {
+    if (id === "you") fileYou.current?.click();
+    else filePartner.current?.click();
+  }, []);
+
   const hint = useMemo(() => {
-    if (grab) return "Drop us anywhere on the floor";
-    if (action === "idle") return "Drag us · drop a photo on a head";
+    if (grab) return "Drag to move · release to place";
+    if (action === "idle") return "Drag us around · tap a head to set a photo";
     const current = STAGE_ACTIONS.find((item) => item.id === action);
     return current?.hint ?? "";
   }, [action, grab]);
@@ -76,61 +90,77 @@ export function HomeStage() {
       >
         <Canvas
           dpr={[1, 1.6]}
-          camera={{ position: [0, 1.7, 4.1], fov: 34, near: 0.1, far: 20 }}
+          camera={{ position: [0, 1.55, 3.7], fov: 36, near: 0.1, far: 20 }}
           gl={{ antialias: true, alpha: true }}
-          onCreated={({ camera }) => camera.lookAt(0, 0.72, 0)}
+          onCreated={({ camera }) => camera.lookAt(0, 0.7, 0)}
           className="touch-none h-full w-full"
         >
           <color attach="background" args={["#f3ebe2"]} />
           <Suspense fallback={null}>
-            <hemisphereLight args={["#fff6ea", "#9aa894", 0.9]} />
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[2.8, 5.2, 3.2]} intensity={1.2} color="#fff4e8" />
-            <pointLight position={[-2.2, 2.4, 1.2]} intensity={0.55} color="#f4c2c2" />
-            <pointLight position={[2.4, 1.8, -0.6]} intensity={0.35} color="#a9b8a9" />
+            <DragLayer
+              grab={grab}
+              originRef={originRef}
+              onMove={movePerson}
+              onRelease={releasePerson}
+              onTap={tapPerson}
+            />
+            <hemisphereLight args={["#fff6ea", "#9aa894", 0.95]} />
+            <ambientLight intensity={0.55} />
+            <directionalLight position={[2.4, 4.8, 3.4]} intensity={1.25} color="#fff4e8" />
+            <pointLight position={[-2.2, 2.4, 1.2]} intensity={0.5} color="#f4c2c2" />
 
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
-              <circleGeometry args={[2.4, 48]} />
+              <circleGeometry args={[2.2, 48]} />
               <meshStandardMaterial color="#f7f1ea" roughness={0.9} />
             </mesh>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
-              <ringGeometry args={[1.55, 1.72, 48]} />
+              <ringGeometry args={[1.45, 1.62, 48]} />
               <meshStandardMaterial color="#eadfd4" roughness={1} />
             </mesh>
 
             <Person
-              key={`you-${photos.you.slice(0, 32)}`}
               photo={photos.you}
               outfit={CHARACTERS.you.outfit}
               accent={CHARACTERS.you.accent}
+              hair={CHARACTERS.you.hair}
               home={HOMES.you}
               x={you.x}
               z={you.z}
-              facing={1}
+              side="left"
               action={action}
               grabbed={grab === "you"}
-              onGrab={() => setGrab("you")}
-              onMove={(nx, nz) => setYou({ x: nx, z: nz })}
-              onRelease={() => setGrab(null)}
+              onPointerDown={(event) => {
+                originRef.current = {
+                  x: event.nativeEvent.clientX,
+                  y: event.nativeEvent.clientY,
+                  dragged: false,
+                };
+                setGrab("you");
+              }}
             />
             <Person
-              key={`partner-${photos.partner.slice(0, 32)}`}
               photo={photos.partner}
               outfit={CHARACTERS.partner.outfit}
               accent={CHARACTERS.partner.accent}
+              hair={CHARACTERS.partner.hair}
               home={HOMES.partner}
               x={partner.x}
               z={partner.z}
-              facing={-1}
+              side="right"
               action={action}
               grabbed={grab === "partner"}
-              onGrab={() => setGrab("partner")}
-              onMove={(nx, nz) => setPartner({ x: nx, z: nz })}
-              onRelease={() => setGrab(null)}
+              onPointerDown={(event) => {
+                originRef.current = {
+                  x: event.nativeEvent.clientX,
+                  y: event.nativeEvent.clientY,
+                  dragged: false,
+                };
+                setGrab("partner");
+              }}
             />
 
             <FloatingHearts active={action === "kiss" || action === "hug"} />
-            <ContactShadows position={[0, 0, 0]} opacity={0.38} scale={7} blur={2.4} far={3} />
+            <ContactShadows position={[0, 0, 0]} opacity={0.32} scale={6.5} blur={2.2} far={2.8} />
           </Suspense>
         </Canvas>
 
@@ -141,10 +171,7 @@ export function HomeStage() {
         </div>
 
         <div className="absolute bottom-3 left-3 right-3 flex justify-between">
-          <PhotoButton
-            label={CHARACTERS.you.name}
-            onClick={() => fileYou.current?.click()}
-          />
+          <PhotoButton label={CHARACTERS.you.name} onClick={() => fileYou.current?.click()} />
           <PhotoButton
             label={CHARACTERS.partner.name}
             onClick={() => filePartner.current?.click()}
