@@ -16,6 +16,7 @@ import { useRef } from "react";
 import type { PlayViewId } from "@/data/content";
 import { SITE, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
+import { MusicPlayer } from "@/components/MusicPlayer";
 
 function startOfTogether() {
   const [year, month, day] = SITE.startDate.split("-").map(Number);
@@ -148,6 +149,8 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
           );
         })}
       </div>
+
+      <MusicPlayer src="/song.mp3" title="Our Song" />
 
       <div className="mt-7">
         <p className="text-xs font-medium tracking-[0.26em] text-sage-deep uppercase">

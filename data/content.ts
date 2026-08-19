@@ -88,7 +88,7 @@ export const MEMORIES: Memory[] = [
     story: "picture mi bago nag hawa balay",
     motif: "stars",
     tilt: -3.2,
-    photo: "/memories/01.jpg",
+    photo: "/memories/01.png",
   },
   {
     id: "couch-peace",
@@ -98,7 +98,7 @@ export const MEMORIES: Memory[] = [
     story: "first time giving her flowers",
     motif: "home",
     tilt: 2.4,
-    photo: "/memories/02.jpg",
+    photo: "/memories/02.png",
   },
   {
     id: "mirror-night",
@@ -108,7 +108,7 @@ export const MEMORIES: Memory[] = [
     story: "detour date after mag judge sa linggo ng kabataan",
     motif: "rain",
     tilt: -1.8,
-    photo: "/memories/03.jpg",
+    photo: "/memories/03.png",
   },
   {
     id: "cafe-table",
@@ -118,7 +118,7 @@ export const MEMORIES: Memory[] = [
     story: "tuyok tuyok mi ani sa magsaysay park",
     motif: "coffee",
     tilt: 3.1,
-    photo: "/memories/04.jpg",
+    photo: "/memories/04.png",
   },
   {
     id: "green-leaves",
@@ -128,7 +128,7 @@ export const MEMORIES: Memory[] = [
     story: "cravings satisfied",
     motif: "picnic",
     tilt: -2.6,
-    photo: "/memories/05.jpg",
+    photo: "/memories/05.png",
   },
   {
     id: "pink-flowers",
@@ -138,7 +138,7 @@ export const MEMORIES: Memory[] = [
     story: "first date namo sa samal naulanan mi diri tas nakatulog sa ferry boat pauli haha",
     motif: "sunset",
     tilt: 1.7,
-    photo: "/memories/06.jpg",
+    photo: "/memories/06.png",
   },
   {
     id: "two-glasses",
@@ -148,7 +148,7 @@ export const MEMORIES: Memory[] = [
     story: "first date namo sa halal na cafe",
     motif: "coffee",
     tilt: -4.0,
-    photo: "/memories/07.jpg",
+    photo: "/memories/07.png",
   },
   {
     id: "caps-and-shades",
@@ -158,7 +158,7 @@ export const MEMORIES: Memory[] = [
     story: "gi ubanan ko niya buhat work, iloveyouuu",
     motif: "stars",
     tilt: 2.2,
-    photo: "/memories/08.jpg",
+    photo: "/memories/08.png",
   },
 ];
 
