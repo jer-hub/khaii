@@ -56,10 +56,11 @@ const REST: Pose = {
   headTilt: 0,
   headTurn: 0,
   faceY: 0,
-  armL: { out: 0.4, raise: 0.04, elbow: 0.22 },
-  armR: { out: -0.4, raise: 0.04, elbow: 0.22 },
-  wristL: { flick: 0.06, twist: 0.08 },
-  wristR: { flick: 0.06, twist: -0.08 },
+  // Neutral chibi rest pose: arms hanging close to the sides.
+  armL: { out: 0.18, raise: 0.01, elbow: 0.16 },
+  armR: { out: -0.18, raise: 0.01, elbow: 0.16 },
+  wristL: { flick: 0.02, twist: 0.04 },
+  wristR: { flick: 0.02, twist: -0.04 },
   legL: { lift: 0.06, knee: 0.12 },
   legR: { lift: 0.06, knee: 0.12 },
 };
@@ -118,22 +119,24 @@ function poseFor(
     pose.headTurn = left * 0.07;
     pose.headTilt = -down * 0.04;
     pose.armL = {
-      out: 0.38 + Math.abs(right) * 0.08,
-      raise: right * 0.55,
-      elbow: 0.22 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.35,
+      // Keep hands beside the body (smaller swing for the chibi rig).
+      out: 0.16 + Math.abs(right) * 0.12,
+      raise: 0.03 + right * 0.12,
+      elbow:
+        0.15 + Math.max(0, -Math.sin(cadence + Math.PI + elbowLag)) * 0.18,
     };
     pose.armR = {
-      out: -0.38 - Math.abs(left) * 0.08,
-      raise: left * 0.55,
-      elbow: 0.22 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.35,
+      out: -0.16 - Math.abs(left) * 0.12,
+      raise: 0.03 + left * 0.12,
+      elbow: 0.15 + Math.max(0, -Math.sin(cadence + elbowLag)) * 0.18,
     };
     pose.wristL = {
-      flick: Math.sin(cadence + Math.PI + wristLag) * 0.55,
-      twist: Math.sin(cadence + Math.PI + wristLag) * 0.65,
+      flick: Math.sin(cadence + Math.PI + wristLag) * 0.22,
+      twist: Math.sin(cadence + Math.PI + wristLag) * 0.28,
     };
     pose.wristR = {
-      flick: Math.sin(cadence + wristLag) * 0.55,
-      twist: -Math.sin(cadence + wristLag) * 0.65,
+      flick: Math.sin(cadence + wristLag) * 0.22,
+      twist: -Math.sin(cadence + wristLag) * 0.28,
     };
     pose.legL = {
       lift: 0.06 + Math.max(0, left) * 0.58,
