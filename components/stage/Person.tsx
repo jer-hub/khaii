@@ -61,8 +61,9 @@ const REST: Pose = {
   armR: { out: -0.18, raise: 0.01, elbow: 0.16 },
   wristL: { flick: 0.02, twist: 0.04 },
   wristR: { flick: 0.02, twist: -0.04 },
-  legL: { lift: 0.06, knee: 0.12 },
-  legR: { lift: 0.06, knee: 0.12 },
+  // Straight-ish legs for the "drawn chibi" idle silhouette.
+  legL: { lift: 0.02, knee: 0.0 },
+  legR: { lift: 0.02, knee: 0.0 },
 };
 
 function poseFor(
@@ -101,6 +102,26 @@ function poseFor(
     pose.wristR = { flick: 0.35, twist: -0.2 };
     pose.headTilt = 0.12;
     return pose;
+  }
+
+  // The provided reference chibi is very "still" at rest.
+  // Clamp all idle motion so arms/hands/legs stay in a clean T-shape silhouette.
+  if (action === "idle") {
+    return {
+      ...pose,
+      hop: 0,
+      hipsTilt: 0,
+      spineBend: 0,
+      chestTwist: 0,
+      headTilt: 0,
+      headTurn: 0,
+      armL: REST.armL,
+      armR: REST.armR,
+      wristL: REST.wristL,
+      wristR: REST.wristR,
+      legL: REST.legL,
+      legR: REST.legR,
+    };
   }
 
   if (action === "walk") {
