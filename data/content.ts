@@ -10,8 +10,8 @@
  */
 
 export const SITE = {
-  partnerName: "My Love",
-  yourName: "Me",
+  partnerName: "Khai",
+  yourName: "Toto",
   appName: "Our Journey",
   tagline: "A little corner of the internet, just for us.",
   /** Compared case-insensitively; punctuation is ignored. "02/14" matches "0214". */

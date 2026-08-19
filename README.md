@@ -20,7 +20,7 @@ Default password: **`0214`**
 
 ## Home stage
 
-The Home tab has a live 3D couple. Drag them around the floor, tap a head (or use Photo · Me / My Love) to set a face — it saves in `localStorage` — and tap **Wave / Hug / Dance / Kiss / Jump**. You can also drop an image file onto the left or right half of the stage.
+The Home tab has a live 3D couple. Drag them around the floor, tap a head (or use Photo · Toto / Khai) to set a face — it saves in `localStorage` — and tap **Wave / Hug / Dance / Kiss / Jump**. You can also drop an image file onto the left or right half of the stage.
 
 ## Play with me
 
