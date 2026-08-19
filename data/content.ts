@@ -3,13 +3,15 @@
  * PERSONALIZE THIS FILE
  *
  * Everything the gift site displays lives here — name, password, dates,
- * memories, coupons, reasons, game pairs, quiz cards, and story scenes.
+ * memories, coupons, reasons, game pairs, quiz cards, story scenes,
+ * and the 3D couple (names + placeholder photos).
  * Edit these values; you shouldn't need to touch the rest of the app.
  * ──────────────────────────────────────────────────────────────────────────
  */
 
 export const SITE = {
   partnerName: "My Love",
+  yourName: "Me",
   appName: "Our Journey",
   tagline: "A little corner of the internet, just for us.",
   /** Compared case-insensitively; punctuation is ignored. "02/14" matches "0214". */
@@ -18,6 +20,36 @@ export const SITE = {
   /** ISO date used to calculate "Days Together". */
   startDate: "2024-02-14",
 } as const;
+
+export const CHARACTERS = {
+  you: {
+    id: "you" as const,
+    name: SITE.yourName,
+    photo: "/avatars/you.png",
+    outfit: "#8fa38f",
+    accent: "#d7e0d4",
+    hair: "#3d322c",
+  },
+  partner: {
+    id: "partner" as const,
+    name: SITE.partnerName,
+    photo: "/avatars/partner.png",
+    outfit: "#e39a9a",
+    accent: "#f7d6d6",
+    hair: "#5c342f",
+  },
+};
+
+export const STAGE_ACTIONS = [
+  { id: "wave", label: "Wave", hint: "A little hello" },
+  { id: "hug", label: "Hug", hint: "Come closer" },
+  { id: "dance", label: "Dance", hint: "Sway with me" },
+  { id: "kiss", label: "Kiss", hint: "Lean in" },
+  { id: "jump", label: "Jump", hint: "Up we go" },
+] as const;
+
+export type CharacterId = keyof typeof CHARACTERS;
+export type StageAction = (typeof STAGE_ACTIONS)[number]["id"];
 
 export const STATS = {
   citiesVisited: 8,
