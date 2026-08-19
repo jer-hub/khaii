@@ -256,7 +256,7 @@ export const REASONS: Reason[] = [
   {
     id: "r7",
     title: "How you remember the tiny things",
-    body: "The order I like my coffee. The story I told once. The song that was playing. You keep a quiet archive of me.",
+    body: "The flavor I wanted, times you had to give me coke. The story I told once. The song that was playing. You keep a quiet archive of me.",
   },
   {
     id: "r8",
