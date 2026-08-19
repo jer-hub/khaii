@@ -422,13 +422,8 @@ export function Person({
           </mesh>
 
           <group ref={chest} position={[0, 0.12, 0]}>
-            <mesh position={[0, 0.02, 0.06]} rotation={[0.25, 0, 0]}>
-              <circleGeometry args={[0.07, 20]} />
-              <meshStandardMaterial color={accent} roughness={0.5} />
-            </mesh>
-
             <group ref={head} position={[0, 0.26, 0]}>
-              <mesh>
+              <mesh scale={[1, 1, 0.88]}>
                 <sphereGeometry args={[0.23, 28, 28]} />
                 <meshStandardMaterial color={skin} roughness={0.48} />
               </mesh>
@@ -444,24 +439,12 @@ export function Person({
                 <sphereGeometry args={[0.065, 12, 12]} />
                 <meshStandardMaterial color={hair} roughness={0.72} />
               </mesh>
-              <mesh position={[0.11, -0.04, 0.175]}>
-                <sphereGeometry args={[0.038, 10, 10]} />
-                <meshStandardMaterial color="#f4c2c2" transparent opacity={0.55} />
-              </mesh>
-              <mesh position={[-0.11, -0.04, 0.175]}>
-                <sphereGeometry args={[0.038, 10, 10]} />
-                <meshStandardMaterial color="#f4c2c2" transparent opacity={0.55} />
-              </mesh>
-              <mesh position={[0, 0.01, 0.218]} renderOrder={2}>
-                <circleGeometry args={[0.155, 32]} />
-                <meshBasicMaterial color="#fff6ea" toneMapped={false} />
-              </mesh>
-              <mesh position={[0, 0.01, 0.222]} renderOrder={3}>
-                <circleGeometry args={[0.14, 32]} />
+              <mesh position={[0, 0.01, 0.205]} renderOrder={2}>
+                <circleGeometry args={[0.2, 32]} />
                 <meshBasicMaterial map={texture} toneMapped={false} />
               </mesh>
-              <mesh position={[0, 0.01, 0.224]} renderOrder={4}>
-                <ringGeometry args={[0.14, 0.162, 32]} />
+              <mesh position={[0, 0.01, 0.207]} renderOrder={3}>
+                <ringGeometry args={[0.2, 0.216, 32]} />
                 <meshBasicMaterial color={accent} toneMapped={false} />
               </mesh>
             </group>
