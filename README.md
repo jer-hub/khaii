@@ -10,8 +10,20 @@ All of the copy, dates, and numbers live in [`data/content.ts`](data/content.ts)
 - `SITE.password` — gate password (punctuation is ignored, so `02/14` matches `0214`)
 - `SITE.startDate` — used to calculate **Days Together**
 - `MEMORIES`, `COUPONS`, `REASONS`, `STATS` — the scrapbook, coupon book, swipe deck, and dashboard
+- `GAME_PAIRS` — tiles for the **Memory match** game (Home → Play with me)
+- `QUIZ_CARDS` — questions and choices for the **Flashcard quiz**
+- `STORY_SCENES` — scenes for the **Our story** viewer (intro + memories + closing beat)
 
 Default password: **`0214`**
+
+## Play with me
+
+From Home, three extra experiences open as nested views (the bottom tab bar stays at four items; the story viewer hides it):
+
+- **Memory match** — 4×4 pair game with flip animation, moves, timer, and confetti
+- **Flashcard quiz** — multiple-choice cards that flip to the answer, then a score
+- **Our story** — autoplay scene viewer with pause, skip, and a progress bar
+
 
 ## Develop
 

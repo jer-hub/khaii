@@ -3,8 +3,8 @@
  * PERSONALIZE THIS FILE
  *
  * Everything the gift site displays lives here — name, password, dates,
- * memories, coupons, and reasons. Edit these values; you shouldn't need
- * to touch the rest of the app.
+ * memories, coupons, reasons, game pairs, quiz cards, and story scenes.
+ * Edit these values; you shouldn't need to touch the rest of the app.
  * ──────────────────────────────────────────────────────────────────────────
  */
 
@@ -32,6 +32,8 @@ export type MemoryMotif =
   | "picnic"
   | "stars"
   | "home";
+
+export type ArtMotif = MemoryMotif | "heart" | "ring";
 
 export type Memory = {
   id: string;
@@ -234,6 +236,113 @@ export const REASONS: Reason[] = [
   },
 ];
 
+export type GamePair = {
+  id: string;
+  motif: ArtMotif;
+  label: string;
+};
+
+export const GAME_PAIRS: GamePair[] = [
+  { id: "coffee", motif: "coffee", label: "Coffee" },
+  { id: "rain", motif: "rain", label: "Rain" },
+  { id: "sunset", motif: "sunset", label: "Sunset" },
+  { id: "picnic", motif: "picnic", label: "Picnic" },
+  { id: "stars", motif: "stars", label: "Stars" },
+  { id: "home", motif: "home", label: "Home" },
+  { id: "heart", motif: "heart", label: "Heart" },
+  { id: "ring", motif: "ring", label: "Forever" },
+];
+
+export type QuizCard = {
+  id: string;
+  prompt: string;
+  answer: string;
+  choices: string[];
+};
+
+export const QUIZ_CARDS: QuizCard[] = [
+  {
+    id: "q1",
+    prompt: "Where did we have our first coffee?",
+    answer: "The little corner cafe",
+    choices: ["The little corner cafe", "A train station kiosk", "Your kitchen", "The park bench"],
+  },
+  {
+    id: "q2",
+    prompt: "What did we forget on that rainy walk?",
+    answer: "An umbrella",
+    choices: ["The keys", "An umbrella", "A map", "Your jacket"],
+  },
+  {
+    id: "q3",
+    prompt: "How many cities have we visited together?",
+    answer: "8",
+    choices: ["3", "8", "12", "21"],
+  },
+  {
+    id: "q4",
+    prompt: "What kitchen disaster still made a perfect night?",
+    answer: "The pasta",
+    choices: ["The cake", "The pasta", "Burnt toast", "Soup that never thickened"],
+  },
+  {
+    id: "q5",
+    prompt: "Where was the picnic when the sky showed off?",
+    answer: "The hill above the river",
+    choices: ["The beach parking lot", "The hill above the river", "A rooftop", "Your backyard"],
+  },
+  {
+    id: "q6",
+    prompt: "At the concert, what were you doing?",
+    answer: "Singing every word",
+    choices: ["Checking the time", "Singing every word", "Buying merch", "Finding seats"],
+  },
+  {
+    id: "q7",
+    prompt: "How did we find that unexpected town?",
+    answer: "A wrong turn",
+    choices: ["A guidebook", "A wrong turn", "A friend's tip", "A train we missed"],
+  },
+  {
+    id: "q8",
+    prompt: "About how many cups of coffee is this whole story?",
+    answer: "167",
+    choices: ["42", "89", "167", "300"],
+  },
+];
+
+export type StoryScene = {
+  id: string;
+  title: string;
+  date?: string;
+  body: string;
+  motif: ArtMotif;
+};
+
+export const STORY_SCENES: StoryScene[] = [
+  {
+    id: "intro",
+    title: "Once upon a us",
+    date: "The beginning",
+    body: "Not a fairytale — just the days we actually lived, lined up so you can watch them again.",
+    motif: "heart",
+  },
+  ...MEMORIES.map((memory) => ({
+    id: memory.id,
+    title: memory.title,
+    date: memory.date,
+    body: memory.story,
+    motif: memory.motif,
+  })),
+  {
+    id: "always",
+    title: "And still",
+    date: "Today",
+    body: "The best part is that the story is not finished. It just keeps choosing you.",
+    motif: "ring",
+  },
+];
+
 export const TABS = [
   { id: "home", label: "Home" },
   { id: "memories", label: "Scrapbook" },
@@ -241,4 +350,6 @@ export const TABS = [
   { id: "reasons", label: "Reasons" },
 ] as const;
 
-export type TabId = (typeof TABS)[number]["id"];
+export type NavTabId = (typeof TABS)[number]["id"];
+export type PlayViewId = "game" | "quiz" | "story";
+export type TabId = NavTabId | PlayViewId;

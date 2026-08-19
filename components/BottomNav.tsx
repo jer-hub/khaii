@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import { BookHeart, Heart, House, Ticket } from "lucide-react";
-import type { TabId } from "@/data/content";
+import type { NavTabId, TabId } from "@/data/content";
 
-const items: { id: TabId; label: string; icon: typeof House }[] = [
+const items: { id: NavTabId; label: string; icon: typeof House }[] = [
   { id: "home", label: "Home", icon: House },
   { id: "memories", label: "Scrapbook", icon: BookHeart },
   { id: "coupons", label: "Coupons", icon: Ticket },
@@ -16,7 +16,7 @@ export function BottomNav({
   onChange,
 }: {
   tab: TabId;
-  onChange: (tab: TabId) => void;
+  onChange: (tab: NavTabId) => void;
 }) {
   return (
     <nav className="safe-bottom glass sticky bottom-0 z-30 border-t border-white/70 px-3 pt-2">

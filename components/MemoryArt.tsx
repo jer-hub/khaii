@@ -1,6 +1,6 @@
-import type { MemoryMotif } from "@/data/content";
+import type { ArtMotif } from "@/data/content";
 
-export function MemoryArt({ motif }: { motif: MemoryMotif }) {
+export function MemoryArt({ motif }: { motif: ArtMotif }) {
   return (
     <svg viewBox="0 0 200 240" className="h-full w-full" aria-hidden>
       {motif === "coffee" && <CoffeeScene />}
@@ -9,6 +9,8 @@ export function MemoryArt({ motif }: { motif: MemoryMotif }) {
       {motif === "picnic" && <PicnicScene />}
       {motif === "stars" && <StarsScene />}
       {motif === "home" && <HomeScene />}
+      {motif === "heart" && <HeartScene />}
+      {motif === "ring" && <RingScene />}
     </svg>
   );
 }
@@ -114,6 +116,32 @@ function HomeScene() {
       <rect x="54" y="108" width="26" height="26" fill="#F4C2C2" />
       <rect x="120" y="108" width="26" height="26" fill="#F4C2C2" />
       <path d="M150 170c8-22 22-22 30 0" fill="#7E917E" />
+    </g>
+  );
+}
+
+function HeartScene() {
+  return (
+    <g>
+      <rect width="200" height="240" fill="#F7E8E6" />
+      <circle cx="40" cy="44" r="26" fill="#F4C2C2" opacity="0.55" />
+      <circle cx="168" cy="200" r="36" fill="#A9B8A9" opacity="0.35" />
+      <path
+        d="M100 188s-44-28-58-56c-10-20-4-44 18-48 14-2 26 6 32 18 6-12 18-20 32-18 22 4 28 28 18 48-14 28-58 56-58 56z"
+        fill="#E39A9A"
+      />
+    </g>
+  );
+}
+
+function RingScene() {
+  return (
+    <g>
+      <rect width="200" height="240" fill="#F3F6F1" />
+      <circle cx="150" cy="48" r="22" fill="#F4C2C2" opacity="0.5" />
+      <circle cx="100" cy="128" r="52" fill="none" stroke="#C4A992" strokeWidth="10" />
+      <circle cx="100" cy="128" r="36" fill="none" stroke="#E39A9A" strokeWidth="6" />
+      <path d="M100 70l6 16 18 2-14 12 4 18-14-10-14 10 4-18-14-12 18-2z" fill="#A9B8A9" />
     </g>
   );
 }

@@ -2,8 +2,17 @@
 
 import { differenceInCalendarDays } from "date-fns";
 import { motion, useInView } from "framer-motion";
-import { Coffee, Film, HeartHandshake, MapPin } from "lucide-react";
+import {
+  Clapperboard,
+  Coffee,
+  Film,
+  Gamepad2,
+  HeartHandshake,
+  Layers,
+  MapPin,
+} from "lucide-react";
 import { useRef } from "react";
+import type { PlayViewId } from "@/data/content";
 import { SITE, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 
@@ -39,7 +48,37 @@ const cards = [
   },
 ] as const;
 
-export function HeroStats() {
+const playCards: {
+  id: PlayViewId;
+  title: string;
+  detail: string;
+  icon: typeof Gamepad2;
+  tint: string;
+}[] = [
+  {
+    id: "game",
+    title: "Memory match",
+    detail: "Find the pairs from our days.",
+    icon: Gamepad2,
+    tint: "bg-rose/40",
+  },
+  {
+    id: "quiz",
+    title: "Flashcard quiz",
+    detail: "How well do you remember us?",
+    icon: Layers,
+    tint: "bg-sage/40",
+  },
+  {
+    id: "story",
+    title: "Our story",
+    detail: "Sit back and watch it unfold.",
+    icon: Clapperboard,
+    tint: "bg-rose/30",
+  },
+];
+
+export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, amount: 0.35 });
 
@@ -92,6 +131,41 @@ export function HeroStats() {
             </motion.article>
           );
         })}
+      </div>
+
+      <div className="mt-8">
+        <p className="text-xs font-medium tracking-[0.26em] text-sage-deep uppercase">
+          Play with me
+        </p>
+        <div className="mt-3 space-y-2.5">
+          {playCards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <motion.button
+                key={card.id}
+                type="button"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.12 + index * 0.06 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onOpen(card.id)}
+                className="glass flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left shadow-[0_10px_30px_rgba(44,44,44,0.05)]"
+              >
+                <span
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${card.tint}`}
+                >
+                  <Icon className="h-4 w-4 text-charcoal" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-serif text-lg leading-tight text-charcoal">
+                    {card.title}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-ink">{card.detail}</span>
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
