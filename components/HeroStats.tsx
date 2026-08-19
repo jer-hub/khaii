@@ -17,6 +17,11 @@ import type { PlayViewId } from "@/data/content";
 import { SITE, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 
+function startOfTogether() {
+  const [year, month, day] = SITE.startDate.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 const HomeStage = dynamic(
   () => import("@/components/stage/HomeStage").then((mod) => mod.HomeStage),
   {
@@ -32,8 +37,7 @@ const cards = [
     key: "days",
     label: "Days together",
     icon: HeartHandshake,
-    getValue: () =>
-      Math.max(1, differenceInCalendarDays(new Date(), new Date(SITE.startDate))),
+    getValue: () => Math.max(1, differenceInCalendarDays(new Date(), startOfTogether())),
   },
   {
     key: "cities",

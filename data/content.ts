@@ -3,7 +3,7 @@
  * PERSONALIZE THIS FILE
  *
  * Everything the gift site displays lives here — name, password, dates,
- * memories, coupons, reasons, game pairs, quiz cards, season story captions,
+ * memories (`MEMORIES` titles, captions, and optional `photo` paths under `public/memories/`),
  * and the 3D couple (names + placeholder photos).
  * Edit these values; you shouldn't need to touch the rest of the app.
  * ──────────────────────────────────────────────────────────────────────────
@@ -17,8 +17,8 @@ export const SITE = {
   /** Compared case-insensitively; punctuation is ignored. "02/14" matches "0214". */
   password: "0214",
   passwordHint: "Hint: a date we both remember.",
-  /** ISO date used to calculate "Days Together". */
-  startDate: "2024-02-14",
+  /** ISO date used to calculate "Days Together" (calendar days from this date to today). */
+  startDate: "2026-05-19",
 } as const;
 
 export const CHARACTERS = {
@@ -75,68 +75,90 @@ export type Memory = {
   story: string;
   motif: MemoryMotif;
   tilt: number;
+  /** Path under `public/`, e.g. `/memories/thatch.jpg`. Leave empty and drop a photo onto the polaroid. */
+  photo?: string;
 };
 
 export const MEMORIES: Memory[] = [
   {
-    id: "first-coffee",
-    title: "First coffee",
-    date: "February 14, 2024",
-    location: "The little corner cafe",
-    story:
-      "The tables were too small and the music was a little too loud. I still remember how you wrapped both hands around the cup, and how the afternoon somehow lasted longer than it should have.",
-    motif: "coffee",
-    tilt: -3.5,
-  },
-  {
-    id: "rainy-walk",
-    title: "Rain we didn't plan for",
-    date: "April 3, 2024",
-    location: "Downtown side streets",
-    story:
-      "We didn't bring an umbrella. You laughed first, then I did, and we just kept walking. I think that's when I knew ordinary weather with you would never feel ordinary.",
-    motif: "rain",
-    tilt: 2.8,
-  },
-  {
-    id: "sunset-picnic",
-    title: "Sunset picnic",
-    date: "June 21, 2024",
-    location: "The hill above the river",
-    story:
-      "Cheese, fruit, a blanket that wouldn't stay put, and the sky showing off. You leaned against my shoulder without saying anything. I didn't need you to.",
-    motif: "sunset",
-    tilt: -1.6,
-  },
-  {
-    id: "the-concert",
-    title: "That concert",
-    date: "August 9, 2024",
-    location: "The packed little venue",
-    story:
-      "You knew every word. I spent half the night watching you instead of the stage. Still the better view.",
+    id: "thatch-selfie",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
     motif: "stars",
-    tilt: 4.2,
+    tilt: -3.2,
+    photo: "/memories/01.jpg",
   },
   {
-    id: "weekend-away",
-    title: "Wrong turn, right place",
-    date: "October 12, 2024",
-    location: "A town we found by accident",
-    story:
-      "The map was useless and the reservation was in the next town over. We stayed anyway. Best wrong turn we've ever taken.",
-    motif: "picnic",
-    tilt: -2.4,
-  },
-  {
-    id: "cooking-night",
-    title: "The pasta incident",
-    date: "January 18, 2025",
-    location: "Our kitchen",
-    story:
-      "The sauce split, the timer lied, and we ate it anyway sitting on the floor. The pasta was a disaster. The evening wasn't.",
+    id: "couch-peace",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
     motif: "home",
-    tilt: 1.8,
+    tilt: 2.4,
+    photo: "/memories/02.jpg",
+  },
+  {
+    id: "mirror-night",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "rain",
+    tilt: -1.8,
+    photo: "/memories/03.jpg",
+  },
+  {
+    id: "cafe-table",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "coffee",
+    tilt: 3.1,
+    photo: "/memories/04.jpg",
+  },
+  {
+    id: "green-leaves",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "picnic",
+    tilt: -2.6,
+    photo: "/memories/05.jpg",
+  },
+  {
+    id: "pink-flowers",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "sunset",
+    tilt: 1.7,
+    photo: "/memories/06.jpg",
+  },
+  {
+    id: "two-glasses",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "coffee",
+    tilt: -4.0,
+    photo: "/memories/07.jpg",
+  },
+  {
+    id: "caps-and-shades",
+    title: "Caption",
+    date: "",
+    location: "",
+    story: "",
+    motif: "stars",
+    tilt: 2.2,
+    photo: "/memories/08.jpg",
   },
 ];
 
