@@ -54,7 +54,7 @@ export type StageAction = (typeof STAGE_ACTIONS)[number]["id"];
 export const STATS = {
   citiesVisited: 1,
   moviesWatched: 2,
-  cupsOfCoffee: 167,
+  cupsOfCoffee: 6,
 } as const;
 
 export type MemoryMotif =
