@@ -53,7 +53,7 @@ export type StageAction = (typeof STAGE_ACTIONS)[number]["id"];
 
 export const STATS = {
   citiesVisited: 1,
-  moviesWatched: 2,
+  moviesWatched: 3,
   cupsOfCoffee: 6,
 } as const;
 
@@ -289,17 +289,18 @@ export type GamePair = {
   id: string;
   motif: ArtMotif;
   label: string;
+  photo?: string;
 };
 
 export const GAME_PAIRS: GamePair[] = [
-  { id: "coffee", motif: "coffee", label: "Coffee" },
-  { id: "rain", motif: "rain", label: "Rain" },
-  { id: "sunset", motif: "sunset", label: "Sunset" },
-  { id: "picnic", motif: "picnic", label: "Picnic" },
-  { id: "stars", motif: "stars", label: "Stars" },
-  { id: "home", motif: "home", label: "Home" },
-  { id: "heart", motif: "heart", label: "Heart" },
-  { id: "ring", motif: "ring", label: "Forever" },
+  { id: "mm1", motif: "coffee", label: "Photo 1", photo: "/mm/01.jpg" },
+  { id: "mm2", motif: "rain", label: "Photo 2", photo: "/mm/02.jpg" },
+  { id: "mm3", motif: "sunset", label: "Photo 3", photo: "/mm/03.jpg" },
+  { id: "mm4", motif: "picnic", label: "Photo 4", photo: "/mm/04.jpg" },
+  { id: "mm5", motif: "stars", label: "Photo 5", photo: "/mm/05.jpg" },
+  { id: "mm6", motif: "home", label: "Photo 6", photo: "/mm/06.jpg" },
+  { id: "mm7", motif: "heart", label: "Photo 7", photo: "/mm/07.jpg" },
+  { id: "mm8", motif: "ring", label: "Photo 8", photo: "/mm/08.jpg" },
 ];
 
 export type QuizCard = {

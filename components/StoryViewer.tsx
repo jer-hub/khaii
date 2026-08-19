@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { SEASON_SECONDS, SEASON_STORY } from "@/data/content";
@@ -16,9 +16,24 @@ const SeasonWorld = dynamic(
 );
 
 export function StoryViewer({ onBack }: { onBack: () => void }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [time, setTime] = useState(0.01);
   const mix = useMemo(() => seasonBlend(time), [time]);
   const caption = mix.blend > 0.55 ? mix.upcoming : mix.current;
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const started = performance.now();
@@ -37,6 +52,7 @@ export function StoryViewer({ onBack }: { onBack: () => void }) {
 
   return (
     <section className="relative h-full w-full overflow-hidden bg-[#f3dce6]">
+      <audio ref={audioRef} src="/story.mp3" loop />
       <SeasonWorld />
 
       <button

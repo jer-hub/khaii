@@ -13,6 +13,7 @@ type Tile = {
   pairId: string;
   motif: ArtMotif;
   label: string;
+  photo?: string;
 };
 
 function shuffle<T>(items: T[]) {
@@ -27,8 +28,8 @@ function shuffle<T>(items: T[]) {
 function deal(): Tile[] {
   return shuffle(
     GAME_PAIRS.flatMap((pair) => [
-      { uid: `${pair.id}-a`, pairId: pair.id, motif: pair.motif, label: pair.label },
-      { uid: `${pair.id}-b`, pairId: pair.id, motif: pair.motif, label: pair.label },
+      { uid: `${pair.id}-a`, pairId: pair.id, motif: pair.motif, label: pair.label, photo: pair.photo },
+      { uid: `${pair.id}-b`, pairId: pair.id, motif: pair.motif, label: pair.label, photo: pair.photo },
     ]),
   );
 }
@@ -127,6 +128,7 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
               key={tile.uid}
               motif={tile.motif}
               label={tile.label}
+              photo={tile.photo}
               faceUp={isFaceUp}
               matched={matched.includes(tile.pairId)}
               onFlip={() => handleFlip(tile.uid, tile.pairId)}
@@ -163,12 +165,14 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
 function GameTile({
   motif,
   label,
+  photo,
   faceUp,
   matched,
   onFlip,
 }: {
   motif: ArtMotif;
   label: string;
+  photo?: string;
   faceUp: boolean;
   matched: boolean;
   onFlip: () => void;
@@ -202,7 +206,11 @@ function GameTile({
             WebkitBackfaceVisibility: "hidden",
           }}
         >
-          <MemoryArt motif={motif} />
+          {photo ? (
+            <img src={photo} alt={label} className="h-full w-full object-cover" />
+          ) : (
+            <MemoryArt motif={motif} />
+          )}
         </div>
       </motion.button>
     </div>

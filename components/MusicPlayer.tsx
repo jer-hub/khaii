@@ -45,10 +45,10 @@ export function MusicPlayer({ src, title = "Our Song" }: MusicPlayerProps) {
     if (!audio) return;
     if (playing) {
       audio.pause();
+      setPlaying(false);
     } else {
-      audio.play();
+      audio.play().then(() => setPlaying(true)).catch(() => {});
     }
-    setPlaying(!playing);
   }, [playing]);
 
   const toggleMute = useCallback(() => {
@@ -80,11 +80,10 @@ export function MusicPlayer({ src, title = "Our Song" }: MusicPlayerProps) {
         layout
         className="glass mt-5 overflow-hidden rounded-2xl shadow-[0_10px_30px_rgba(44,44,44,0.05)]"
       >
-        <motion.button
-          type="button"
+        <motion.div
           layout="position"
           onClick={() => setExpanded(!expanded)}
-          className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
+          className="flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose/40">
             <Music className={`h-4 w-4 text-charcoal ${playing ? "animate-pulse" : ""}`} />
@@ -109,7 +108,7 @@ export function MusicPlayer({ src, title = "Our Song" }: MusicPlayerProps) {
           >
             {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
           </motion.button>
-        </motion.button>
+        </motion.div>
 
         <AnimatePresence>
           {expanded && (
