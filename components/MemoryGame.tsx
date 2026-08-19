@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
-import { GAME_PAIRS, SITE, type ArtMotif } from "@/data/content";
+import { GAME_PAIRS, type ArtMotif } from "@/data/content";
 import { ConfettiBurst } from "@/components/ConfettiBurst";
 import { MemoryArt } from "@/components/MemoryArt";
 import { PlayHeader } from "@/components/PlayHeader";
@@ -37,6 +37,12 @@ function formatTime(seconds: number) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function winMessage(seconds: number) {
+  if (seconds <= 25) return "ikaw na naay photographic eh";
+  if (seconds <= 50) return "weakshit malala";
+  return "wa jud, bugo jud ka!";
 }
 
 export function MemoryGame({ onBack }: { onBack: () => void }) {
@@ -135,7 +141,7 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           className="glass mt-5 rounded-2xl px-5 py-4 text-center shadow-[0_10px_30px_rgba(44,44,44,0.05)]"
         >
-          <p className="font-serif text-xl text-charcoal">You found us, {SITE.partnerName}</p>
+          <p className="font-serif text-xl text-charcoal">{winMessage(seconds)}</p>
           <p className="mt-1 text-sm text-ink">
             {moves} moves in {formatTime(seconds)}.
           </p>
