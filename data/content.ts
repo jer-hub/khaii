@@ -14,8 +14,8 @@ export const SITE = {
   yourName: "Toto",
   appName: "Our Journey",
   tagline: "A little corner of the internet, just for us.",
-  /** Compared case-insensitively; punctuation is ignored. "02/14" matches "0214". */
-  password: "0214",
+  /** Compared case-insensitively; punctuation is ignored. "05/19/26" matches "051926". */
+  password: "051926",
   passwordHint: "Hint: a date we both remember.",
   /** ISO date used to calculate "Days Together" (calendar days from this date to today). */
   startDate: "2026-05-19",

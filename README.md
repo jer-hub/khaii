@@ -7,7 +7,7 @@ A mobile-first Progressive Web App — a private, interactive gift site for a pa
 All of the copy, dates, and numbers live in [`data/content.ts`](data/content.ts):
 
 - `SITE.partnerName` — shown in the welcome header
-- `SITE.password` — gate password (punctuation is ignored, so `02/14` matches `0214`)
+- `SITE.password` — gate password (punctuation is ignored, so `05/19/26` matches `051926`)
 - `SITE.startDate` — used to calculate **Days Together**
 - `MEMORIES`, `COUPONS`, `REASONS`, `STATS` — the scrapbook, coupon book, swipe deck, and dashboard
 - `GAME_PAIRS` — tiles for the **Memory match** game (Home → Play with me)
@@ -16,7 +16,7 @@ All of the copy, dates, and numbers live in [`data/content.ts`](data/content.ts)
 - `CHARACTERS` — names and default head photos for the 3D couple on Home and in Our story (`public/avatars/`)
 - `STAGE_ACTIONS` — the five animations (wave, hug, dance, kiss, jump)
 
-Default password: **`0214`**
+Default password: **`051926`**
 
 ## Home stage
 
