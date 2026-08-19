@@ -108,7 +108,7 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
         transition={{ delay: 0.08 }}
         className="mt-1.5 font-serif text-[1.75rem] leading-tight text-charcoal"
       >
-        Welcome to Our Story, {SITE.partnerName}
+        Welcome to our story, {SITE.yourName} x {SITE.partnerName}
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 12 }}
