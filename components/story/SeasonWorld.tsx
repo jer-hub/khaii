@@ -63,12 +63,14 @@ function Scene() {
     if (world.current) world.current.position.z = (t / STORY_LOOP_SECONDS) * WORLD_LENGTH;
 
     const pulse = mix.blend * 0.5;
+    const aspect = state.camera instanceof THREE.PerspectiveCamera ? state.camera.aspect : 0.5;
+    const dist = aspect < 0.75 ? 4.55 : 4.15;
     state.camera.position.set(
-      Math.sin(t * 0.22) * 0.55,
-      1.42 + Math.sin(t * 0.18) * 0.08 + pulse * 0.14,
-      3.55 - pulse * 0.6 - mix.loopFade * 0.85,
+      Math.sin(t * 0.22) * 0.38,
+      1.05 + Math.sin(t * 0.18) * 0.04 + pulse * 0.08,
+      dist - pulse * 0.28 - mix.loopFade * 0.35,
     );
-    state.camera.lookAt(0, 0.72, 0);
+    state.camera.lookAt(0, 0.52, 0);
 
     const nextAction = actionForTime(t);
     if (nextAction !== actionRef.current) {
@@ -152,7 +154,7 @@ export function SeasonWorld() {
     <div className="h-full w-full">
       <Canvas
         dpr={[1, 1.5]}
-        camera={{ position: [0, 1.42, 3.55], fov: 38, near: 0.1, far: 24 }}
+        camera={{ position: [0, 1.05, 4.55], fov: 40, near: 0.1, far: 24 }}
         gl={{ antialias: true }}
         className="h-full w-full"
         style={{ display: "block", width: "100%", height: "100%" }}

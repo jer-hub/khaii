@@ -67,7 +67,7 @@ export function StoryViewer({ onBack }: { onBack: () => void }) {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-charcoal/70 to-transparent px-6 pb-8 pt-16">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-charcoal/55 to-transparent px-6 pb-7 pt-10">
         <motion.div
           key={caption.id}
           initial={{ opacity: 0, y: 10 }}
