@@ -32,3 +32,5 @@ Thanks for helping improve this project.
 - Follow existing TypeScript and React patterns in the touched area.
 - Avoid introducing new dependencies unless required.
 - Keep UI behavior mobile-first and PWA-safe.
+- For personalization/content-only changes, prefer `data/content.ts` and assets under `public/`.
+- See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PERSONALIZATION.md](docs/PERSONALIZATION.md) for deeper context.

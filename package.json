@@ -2,6 +2,27 @@
   "name": "our-journey",
   "version": "0.1.0",
   "private": true,
+  "description": "Mobile-first Next.js PWA for a private relationship timeline — scrapbook, games, coupons, and a 3D couple stage.",
+  "homepage": "https://khaii.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jer-hub/khaii.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jer-hub/khaii/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "pwa",
+    "react",
+    "typescript",
+    "threejs",
+    "framer-motion",
+    "scrapbook",
+    "relationship"
+  ],
+  "author": "Jerwin Carreon",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
