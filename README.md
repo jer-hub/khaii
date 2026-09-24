@@ -1,58 +1,128 @@
 # Our Journey
 
-A mobile-first Progressive Web App — a private, interactive gift site for a partner.
+Our Journey is a mobile-first Next.js Progressive Web App for sharing a private, interactive relationship timeline with games, stories, and keepsakes.
 
-## Personalize
+## Table of contents
 
-All of the copy, dates, and numbers live in [`data/content.ts`](data/content.ts):
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Customization guide](#customization-guide)
+- [PWA behavior](#pwa-behavior)
+- [Deployment](#deployment)
+- [Scripts](#scripts)
+- [Contributing](#contributing)
+- [Security](#security)
 
-- `SITE.partnerName` — shown in the welcome header
-- `SITE.password` — gate password (punctuation is ignored, so `05/19/26` matches `051926`)
-- `SITE.startDate` — used to calculate **Days Together**
-- `MEMORIES`, `COUPONS`, `REASONS`, `STATS` — the scrapbook, coupon book, swipe deck, and dashboard
-- `GAME_PAIRS` — tiles for the **Memory match** game (Home → Play with me)
-- `QUIZ_CARDS` — questions and choices for the **Flashcard quiz**
-- `SEASON_STORY` — four caption beats (spring through winter) for the **Our story** 30s 3D loop
-- `CHARACTERS` — names and default head photos for the 3D couple on Home and in Our story (`public/avatars/`)
-- `STAGE_ACTIONS` — the five animations (wave, hug, dance, kiss, jump)
+## Features
 
-Default password: **`051926`**
+- Password-gated entry experience
+- Home tab with interactive 3D couple stage
+- Personalized scrapbook memories with optional image assets
+- Redeemable-style coupon deck and reasons swipe deck
+- Memory match game with timer/move tracking and confetti
+- Flashcard quiz flow with scoring
+- Seasonal 3D story viewer loop
+- Installable PWA (manifest, icons, service worker registration)
 
-## Home stage
+## Tech stack
 
-The Home tab has a live 3D couple. Drag them around the floor, tap a head (or use Photo · Toto / Khai) to set a face — it saves in `localStorage` — and tap **Wave / Hug / Dance / Kiss / Jump**. You can also drop an image file onto the left or right half of the stage.
+- [Next.js 16](https://nextjs.org/) + React 19 + TypeScript
+- Tailwind CSS 4
+- Framer Motion
+- Three.js via `@react-three/fiber` and `@react-three/drei`
 
-## Play with me
+## Project structure
 
-From Home, three extra experiences open as nested views (the bottom tab bar stays at four items; the story viewer hides it):
+```text
+app/                # Next.js app router entrypoints, metadata, manifest
+components/         # UI building blocks and interactive experiences
+components/stage/   # 3D home stage pieces
+components/story/   # 3D seasonal story pieces
+data/content.ts     # primary personalization and content source
+hooks/              # client-side state helpers (unlock state, persistence)
+public/             # static assets (icons, avatars, memories, mm cards, sw.js)
+```
 
-- **Memory match** — 4×4 pair game with flip animation, moves, timer, and confetti
-- **Flashcard quiz** — multiple-choice cards that flip to the answer, then a score
-- **Our story** — a 30-second looping 3D walk through four seasons, using the Home avatars. Viewing only (close to leave); captions live in `SEASON_STORY`.
+## Getting started
 
+### Prerequisites
 
-## Develop
+- Node.js 20+
+- npm 10+
+
+### Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Visit `http://localhost:3000`.
 
-## Build
+## Customization guide
+
+All end-user content is centralized in [`data/content.ts`](data/content.ts). In most cases, this is the only file you need to edit.
+
+### Core site settings
+
+- `SITE.partnerName` and `SITE.yourName`: names displayed throughout the app
+- `SITE.appName` and `SITE.tagline`: metadata and hero text
+- `SITE.password`: password gate secret (punctuation-insensitive match)
+- `SITE.passwordHint`: helper text for unlock screen
+- `SITE.startDate`: used to calculate “Days Together”
+
+### Content collections
+
+- `MEMORIES`: scrapbook cards (`photo` should reference files under `public/`)
+- `COUPONS`: coupon entries displayed in the coupon deck
+- `REASONS`: swipeable “reasons I love you” cards
+- `STATS`: dashboard counters
+- `GAME_PAIRS`: memory match game tiles
+- `QUIZ_CARDS`: flashcard quiz prompts and answer options
+- `SEASON_STORY`: 4-scene story loop copy and color palette
+- `CHARACTERS`: names and default avatar paths for 3D models
+- `STAGE_ACTIONS`: available home stage animations
+
+### Asset locations
+
+- Avatars: `public/avatars/`
+- Scrapbook photos: `public/memories/`
+- Memory match images: `public/mm/`
+- PWA icons: `public/icons/`
+
+## PWA behavior
+
+The app includes:
+
+- Web app manifest (`app/manifest.ts`)
+- Service worker registration (`components/PwaRegister.tsx`)
+- Static service worker (`public/sw.js`)
+- Mobile install support via “Add to Home Screen”
+
+## Deployment
+
+Any host that supports Next.js can run this project.
+
+### Production build
 
 ```bash
 npm run build
-npm start
+npm run start
 ```
 
-## PWA
+## Scripts
 
-The app is installable:
+- `npm run dev` — start local dev server
+- `npm run build` — create production build
+- `npm run start` — run production server
+- `npm run lint` — run ESLint checks
 
-- Web app manifest (`Our Journey`, standalone display, cream/rose theme)
-- Icons in `public/icons/`
-- Production service worker at `public/sw.js`
+## Contributing
 
-On a phone: open the site → browser menu → **Add to Home Screen**.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening changes.
+
+## Security
+
+Please report vulnerabilities according to [SECURITY.md](SECURITY.md).
