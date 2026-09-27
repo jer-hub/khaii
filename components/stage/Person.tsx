@@ -68,6 +68,15 @@ const REST: Pose = {
   legR: { lift: 0, knee: 0 },
 };
 
+function smoothstep(edge0: number, edge1: number, value: number) {
+  const t = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}
+
+function mix(from: number, to: number, amount: number) {
+  return from + (to - from) * amount;
+}
+
 function poseFor(
   action: PersonAction,
   elapsed: number,
@@ -178,27 +187,47 @@ function poseFor(
     pose.headTurn = -0.28 * inward;
     pose.chestTwist = 0.22 * inward;
   } else if (action === "hug") {
-    const squeeze = Math.min(1, elapsed / 0.16);
-    const rock = Math.sin(elapsed * 2.6);
-    pose.faceY = 0.9 * inward;
-    pose.spineBend = 0.24;
-    pose.headTilt = 0.34;
-    pose.headTurn = 0.92 * inward;
-    pose.chestTwist = 0.34 * inward + rock * 0.04;
-    pose.hipsY = -0.05;
-    pose.hipsTilt = rock * 0.09;
-    pose.hop = 0.05 + rock * 0.022;
+    // Side-by-side cheek-to-cheek hug: the arms are too short to reach around a partner
+    // PERSON_MIN_DISTANCE away, so the inner arms go behind each other's backs instead.
+    // Keep total head yaw small so both face photos stay readable from the front.
+    const reach = smoothstep(0, 0.32, elapsed);
+    const pop = smoothstep(0.28, 0.62, elapsed);
+    const settled = smoothstep(0.4, 0.8, elapsed);
+    const rock = Math.sin(elapsed * 2.4) * settled;
+    const squeeze = Math.max(0, Math.sin(elapsed * 4.8 - 1.9)) * settled;
+    pose.faceY = 0.35 * inward;
+    pose.headTurn = -0.12 * inward * reach;
+    pose.headTilt = -0.22 * inward * reach;
+    pose.hipsTilt = -0.08 * inward * reach + rock * 0.05;
+    pose.spineBend = 0.04 * reach;
+    pose.hipsY = -0.02 * reach;
+    pose.hop = 0.015 * reach + Math.abs(rock) * 0.012;
+
+    // Left person's arm wraps high across the shoulders, right person's arm low around the waist.
+    const around: Limb =
+      side === "left"
+        ? { out: mix(0.7, 1.35, reach), raise: 0.3 * reach, elbow: (0.5 + squeeze * 0.2) * reach }
+        : { out: mix(-0.7, -1.15, reach), raise: 0.4 * reach, elbow: (0.55 + squeeze * 0.2) * reach };
+    const free: Limb = {
+      out: (0.55 + rock * 0.08) * -inward,
+      raise: -0.18 * reach,
+      elbow: -0.25 * reach,
+    };
     if (side === "left") {
-      pose.armL = { out: -0.7 + 0.28 * squeeze, raise: 0.75 * squeeze, elbow: 0.35 * squeeze };
-      pose.armR = { out: 0.7 - 0.4 * squeeze, raise: 1.05 * squeeze, elbow: 0.55 * squeeze };
+      pose.armR = around;
+      pose.armL = free;
     } else {
-      pose.armL = { out: -0.7 + 0.4 * squeeze, raise: 1.05 * squeeze, elbow: 0.55 * squeeze };
-      pose.armR = { out: 0.7 - 0.28 * squeeze, raise: 0.75 * squeeze, elbow: 0.35 * squeeze };
+      pose.armL = around;
+      pose.armR = free;
     }
-    pose.wristL = { flick: 0.2, twist: 0.7 * inward };
-    pose.wristR = { flick: 0.2, twist: 0.7 * inward };
-    pose.legL.lift = 0.14;
-    pose.legR.lift = 0.05;
+    pose.wristL = { flick: 0.2 + rock * 0.15, twist: 0.25 };
+    pose.wristR = { flick: 0.2 - rock * 0.15, twist: -0.25 };
+
+    const outerLeg = side === "left" ? pose.legL : pose.legR;
+    const innerLeg = side === "left" ? pose.legR : pose.legL;
+    outerLeg.lift = 0.32 * pop;
+    outerLeg.knee = 0.7 * pop;
+    innerLeg.knee = 0.08 * reach;
   } else if (action === "dance") {
     const beat = Math.sin(elapsed * 10.4);
     const bounce = Math.abs(Math.sin(elapsed * 10.4));
