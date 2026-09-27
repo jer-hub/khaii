@@ -14,9 +14,10 @@ import {
 } from "lucide-react";
 import { useRef } from "react";
 import type { PlayViewId } from "@/data/content";
-import { SITE, STATS } from "@/data/content";
+import { SITE, SONG, STATS } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 import { MusicPlayer } from "@/components/MusicPlayer";
+import type { AudioPlayer } from "@/hooks/useAudioPlayer";
 
 function startOfTogether() {
   const [year, month, day] = SITE.startDate.split("-").map(Number);
@@ -90,7 +91,13 @@ const playCards: {
   },
 ];
 
-export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
+export function HeroStats({
+  song,
+  onOpen,
+}: {
+  song: AudioPlayer;
+  onOpen: (view: PlayViewId) => void;
+}) {
   const gridRef = useRef<HTMLDivElement>(null);
   const inView = useInView(gridRef, { once: true, amount: 0.4 });
 
@@ -144,13 +151,13 @@ export function HeroStats({ onOpen }: { onOpen: (view: PlayViewId) => void }) {
               <p className="mt-1 font-serif text-xl text-charcoal">
                 <CountUp value={card.getValue()} inView={inView} />
               </p>
-              <p className="mt-0.5 text-[10px] leading-tight text-ink">{card.label}</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-ink">{card.label}</p>
             </motion.article>
           );
         })}
       </div>
 
-      <MusicPlayer src="/song.mp3" title="Our Song" />
+      <MusicPlayer player={song} title={SONG.title} />
 
       <div className="mt-7">
         <p className="text-xs font-medium tracking-[0.26em] text-sage-deep uppercase">

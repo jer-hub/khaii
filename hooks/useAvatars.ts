@@ -46,20 +46,36 @@ export function useAvatars() {
   );
   const photos = useMemo(() => parse(raw), [raw]);
 
+  /** Returns false when the browser refuses to store the photo (e.g. storage is full). */
   const setPhoto = useCallback((id: CharacterId, dataUrl: string) => {
     const next = { ...parse(window.localStorage.getItem(STORAGE_KEY)), [id]: dataUrl };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      return false;
+    }
     window.dispatchEvent(new Event(EVENT));
+    return true;
   }, []);
 
   return { photos, setPhoto };
 }
 
-export function readImageFile(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+// localStorage holds only ~5 MB per site, so photos are shrunk before saving.
+const AVATAR_MAX_SIDE = 512;
+
+export async function readImageFile(file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, AVATAR_MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) {
+    bitmap.close();
+    throw new Error("Canvas 2D context is unavailable");
+  }
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return canvas.toDataURL("image/webp", 0.85);
 }

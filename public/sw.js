@@ -1,4 +1,4 @@
-const CACHE = "our-journey-v1";
+const CACHE = "our-journey-v2";
 const PRECACHE = ["/", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -24,16 +24,24 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  if (new URL(request.url).origin !== self.location.origin) return;
+  // Audio seeks use Range requests; their 206 responses can't be cached.
+  if (request.headers.has("range")) return;
 
   event.respondWith(
     fetch(request)
       .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
+        if (response.status === 200) {
+          const copy = response.clone();
+          event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)));
+        }
         return response;
       })
-      .catch(() =>
-        caches.match(request).then((cached) => cached || caches.match("/")),
-      ),
+      .catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        if (request.mode === "navigate") return (await caches.match("/")) ?? Response.error();
+        return Response.error();
+      }),
   );
 });

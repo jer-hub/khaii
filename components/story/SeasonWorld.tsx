@@ -26,8 +26,9 @@ function seasonOpacity(index: number, next: number, blend: number, season: numbe
   return off;
 }
 
-function Scene() {
+function Scene({ onTime }: { onTime?: (t: number) => void }) {
   const { photos } = useAvatars();
+  const lastReport = useRef(-1);
   const world = useRef<THREE.Group>(null);
   const youGroup = useRef<THREE.Group>(null);
   const partnerGroup = useRef<THREE.Group>(null);
@@ -47,6 +48,10 @@ function Scene() {
 
   useFrame((state) => {
     const t = wrapStoryTime(state.clock.elapsedTime);
+    if (onTime && Math.abs(state.clock.elapsedTime - lastReport.current) >= 0.05) {
+      lastReport.current = state.clock.elapsedTime;
+      onTime(t);
+    }
     const mix = seasonBlend(t);
     skyColor.set(mix.current.sky).lerp(scratch.set(mix.upcoming.sky), mix.blend);
     groundColor.set(mix.current.ground).lerp(scratch.set(mix.upcoming.ground), mix.blend);
@@ -151,7 +156,8 @@ function Scene() {
   );
 }
 
-export function SeasonWorld() {
+/** `onTime` reports the scene's loop time (~20×/s) so overlays stay in sync with what's on screen. */
+export function SeasonWorld({ onTime }: { onTime?: (t: number) => void }) {
   return (
     <div className="h-full w-full">
       <Canvas
@@ -163,7 +169,7 @@ export function SeasonWorld() {
         resize={{ debounce: 0 }}
       >
         <Suspense fallback={null}>
-          <Scene />
+          <Scene onTime={onTime} />
         </Suspense>
       </Canvas>
     </div>

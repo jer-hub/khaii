@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Check,
@@ -42,7 +42,7 @@ export function CouponBook() {
       </p>
       <h2 className="mt-1 font-serif text-2xl text-charcoal">Little promises</h2>
       <p className="mt-1 text-sm text-ink">
-        Redeem one whenever you like. They stay redeemed, even if you refresh.
+        Redeem one whenever you like — tap twice to confirm. Once redeemed, it stays redeemed.
       </p>
 
       <div className="mt-6 space-y-3">
@@ -75,6 +75,23 @@ function CouponCard({
   onRedeem: () => void;
 }) {
   const Icon = ICONS[coupon.icon];
+  const [confirming, setConfirming] = useState(false);
+
+  useEffect(() => {
+    if (!confirming) return;
+    const timer = window.setTimeout(() => setConfirming(false), 3500);
+    return () => window.clearTimeout(timer);
+  }, [confirming]);
+
+  function handleClick() {
+    if (redeemed) return;
+    if (!confirming) {
+      setConfirming(true);
+      return;
+    }
+    setConfirming(false);
+    onRedeem();
+  }
 
   return (
     <article className="ticket-notch relative overflow-hidden rounded-2xl px-5 py-4 shadow-[0_10px_28px_rgba(44,44,44,0.06)] ring-1 ring-rose/40">
@@ -98,11 +115,14 @@ function CouponCard({
           disabled={redeemed}
           whileTap={redeemed ? undefined : { scale: 0.96 }}
           whileHover={redeemed ? undefined : { scale: 1.03 }}
-          onClick={onRedeem}
+          onClick={handleClick}
+          aria-live="polite"
           className={`rounded-full px-4 py-2 text-xs font-medium transition-colors ${
             redeemed
               ? "cursor-not-allowed bg-sage/40 text-ink"
-              : "bg-charcoal text-cream"
+              : confirming
+                ? "bg-rose-deep text-charcoal"
+                : "bg-charcoal text-cream"
           }`}
         >
           {redeemed ? (
@@ -110,6 +130,8 @@ function CouponCard({
               <Check className="h-3.5 w-3.5" />
               Redeemed!
             </span>
+          ) : confirming ? (
+            "Tap again to redeem"
           ) : (
             "Redeem"
           )}

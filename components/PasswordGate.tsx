@@ -4,7 +4,9 @@ import { useEffect, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart, KeyRound } from "lucide-react";
 import { SITE } from "@/data/content";
-import { secretsMatch } from "@/lib/password";
+import { normalizeSecret, secretsMatch } from "@/lib/password";
+
+const NUMERIC_PASSWORD = /^\d+$/.test(normalizeSecret(SITE.password));
 
 export function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
   const [value, setValue] = useState("");
@@ -90,7 +92,9 @@ export function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
             <input
               id="gate-password"
               type="password"
-              inputMode="numeric"
+              inputMode={NUMERIC_PASSWORD ? "numeric" : "text"}
+              aria-describedby="gate-message"
+              aria-invalid={Boolean(error)}
               autoComplete="off"
               placeholder="Enter the password"
               value={value}
@@ -109,7 +113,7 @@ export function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
           </motion.button>
         </motion.form>
 
-        <div className="mt-4 min-h-12">
+        <div id="gate-message" className="mt-4 min-h-12" aria-live="polite">
           <AnimatePresence mode="wait">
             {error ? (
               <motion.p

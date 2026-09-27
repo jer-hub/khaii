@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import { ArrowUp, Hand, Heart, HeartHandshake, Music } from "lucide-react";
-import { Suspense, useCallback, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CHARACTERS, STAGE_ACTIONS, type CharacterId, type StageAction } from "@/data/content";
 import { readImageFile, useAvatars } from "@/hooks/useAvatars";
 import { DragLayer, type DragOrigin } from "@/components/stage/DragLayer";
@@ -49,6 +49,8 @@ export function HomeStage() {
   const { photos, setPhoto } = useAvatars();
   const [action, setAction] = useState<StageAction | "idle">("idle");
   const [grab, setGrab] = useState<CharacterId | null>(null);
+  const [photoError, setPhotoError] = useState("");
+  const photoErrorTimer = useRef<number>(0);
   const [you, setYou] = useState({ x: HOMES.you[0], z: HOMES.you[1] });
   const [partner, setPartner] = useState({ x: HOMES.partner[0], z: HOMES.partner[1] });
   const timer = useRef<number>(0);
@@ -58,6 +60,14 @@ export function HomeStage() {
   const youBody = useRef({ x: HOMES.you[0], z: HOMES.you[1] });
   const partnerBody = useRef({ x: HOMES.partner[0], z: HOMES.partner[1] });
 
+  useEffect(
+    () => () => {
+      window.clearTimeout(timer.current);
+      window.clearTimeout(photoErrorTimer.current);
+    },
+    [],
+  );
+
   function play(next: StageAction) {
     window.clearTimeout(timer.current);
     setGrab(null);
@@ -65,10 +75,24 @@ export function HomeStage() {
     timer.current = window.setTimeout(() => setAction("idle"), DURATIONS[next]);
   }
 
+  function showPhotoError(message: string) {
+    window.clearTimeout(photoErrorTimer.current);
+    setPhotoError(message);
+    photoErrorTimer.current = window.setTimeout(() => setPhotoError(""), 3500);
+  }
+
   async function applyFile(id: CharacterId, file: File | undefined) {
-    if (!file || !file.type.startsWith("image/")) return;
-    const dataUrl = await readImageFile(file);
-    setPhoto(id, dataUrl);
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showPhotoError("That file isn't a photo");
+      return;
+    }
+    try {
+      const dataUrl = await readImageFile(file);
+      if (!setPhoto(id, dataUrl)) showPhotoError("Couldn't save that photo · storage is full");
+    } catch {
+      showPhotoError("Couldn't open that photo · try a JPG or PNG");
+    }
   }
 
   const movePerson = useCallback((id: CharacterId, x: number, z: number) => {
@@ -87,11 +111,12 @@ export function HomeStage() {
   }, []);
 
   const hint = useMemo(() => {
+    if (photoError) return photoError;
     if (grab) return "Drag to move · release to place";
     if (action === "idle") return "Drag us around · tap a head to set a photo";
     const current = STAGE_ACTIONS.find((item) => item.id === action);
     return current?.hint ?? "";
-  }, [action, grab]);
+  }, [action, grab, photoError]);
 
   return (
     <div className="relative">
@@ -190,7 +215,12 @@ export function HomeStage() {
         </Canvas>
 
         <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center">
-          <p className="rounded-full bg-white/55 px-3 py-1 text-[11px] tracking-wide text-ink backdrop-blur-md">
+          <p
+            aria-live="polite"
+            className={`rounded-full bg-white/55 px-3 py-1 text-[11px] tracking-wide backdrop-blur-md ${
+              photoError ? "font-medium text-charcoal" : "text-ink"
+            }`}
+          >
             {hint}
           </p>
         </div>
@@ -242,7 +272,7 @@ export function HomeStage() {
               }`}
             >
               <Icon className="mx-auto mb-1 h-4 w-4" />
-              <span className="block text-[10px] font-medium">{item.label}</span>
+              <span className="block text-[11px] font-medium">{item.label}</span>
             </button>
           );
         })}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import { GAME_PAIRS, type ArtMotif } from "@/data/content";
@@ -55,6 +56,7 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
   const [burstId, setBurstId] = useState(0);
+  const flipTimer = useRef<number | undefined>(undefined);
   const won = matched.length === GAME_PAIRS.length;
 
   useEffect(() => {
@@ -63,7 +65,10 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
     return () => window.clearInterval(id);
   }, [running, won]);
 
+  useEffect(() => () => window.clearTimeout(flipTimer.current), []);
+
   function reset() {
+    window.clearTimeout(flipTimer.current);
     setTiles(deal());
     setFlipped([]);
     setMatched([]);
@@ -92,7 +97,7 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
 
     if (first.pairId === pairId) {
       const nextMatched = [...matched, pairId];
-      window.setTimeout(() => {
+      flipTimer.current = window.setTimeout(() => {
         setMatched(nextMatched);
         setFlipped([]);
         setLocked(false);
@@ -103,7 +108,7 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
       return;
     }
 
-    window.setTimeout(() => {
+    flipTimer.current = window.setTimeout(() => {
       setFlipped([]);
       setLocked(false);
     }, 850);
@@ -207,7 +212,7 @@ function GameTile({
           }}
         >
           {photo ? (
-            <img src={photo} alt={label} className="h-full w-full object-cover" />
+            <Image src={photo} alt="" fill sizes="(max-width: 448px) 22vw, 100px" className="object-cover" />
           ) : (
             <MemoryArt motif={motif} />
           )}

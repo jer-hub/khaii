@@ -21,6 +21,12 @@ export const SITE = {
   startDate: "2026-05-19",
 } as const;
 
+/** Home-tab music. Keeps playing across tabs; pauses while the story plays its own track. */
+export const SONG = {
+  src: "/song.mp3",
+  title: "Our Song",
+} as const;
+
 export const CHARACTERS = {
   you: {
     id: "you" as const,

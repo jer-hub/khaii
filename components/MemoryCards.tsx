@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin } from "lucide-react";
 import { MEMORIES, type Memory } from "@/data/content";
@@ -8,10 +9,6 @@ import { MemoryArt } from "@/components/MemoryArt";
 
 export function MemoryCards() {
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
-  const tilts = useMemo(
-    () => Object.fromEntries(MEMORIES.map((memory) => [memory.id, memory.tilt])),
-    [],
-  );
 
   return (
     <section className="px-5 pb-8 pt-6">
@@ -33,7 +30,7 @@ export function MemoryCards() {
           >
             <PolaroidCard
               memory={memory}
-              tilt={tilts[memory.id] ?? 0}
+              tilt={memory.tilt}
               flipped={Boolean(flipped[memory.id])}
               onToggle={() =>
                 setFlipped((current) => ({
@@ -80,13 +77,14 @@ function PolaroidCard({
           className="polaroid-shadow rounded-md bg-white p-2 pb-8"
           style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
         >
-          <div className="aspect-[4/5] overflow-hidden bg-cream">
+          <div className="relative aspect-[4/5] overflow-hidden bg-cream">
             {src ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={src}
                 alt=""
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 448px) 45vw, 200px"
+                className="object-cover"
                 onError={() => setFailed(true)}
               />
             ) : (
